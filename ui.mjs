@@ -6,7 +6,7 @@ const ceil = Math.ceil,
 	previewFrame = document.getElementById("preview_frame"),
 	previewFrameStyle = previewFrame.style,
 	previewSwitch = document.getElementById("preview_switch"),
-	rootStyle = document.firstElementChild.style;
+	rootStyle = document.documentElement.style;
 let previewFrameWidth, save = false, previewSwitchState = true;
 previewFrameStyle.width = (await uiData.get("previewFrameWidth") ?? 256) + "px";
 const resizeObserver = new ResizeObserver(([{ borderBoxSize: [{ inlineSize }] }]) => {
@@ -84,9 +84,9 @@ function dragScroll({ movementX }) { tabsElement.scrollLeft = (dragScrollOrigin 
 function dragScrollEnd() {
 	dragScrollOrigin = undefined;
 	tabsOverlayTrackStyle.opacity = null;
-	window.removeEventListener("pointermove", dragScroll, { passive: true });
-	window.removeEventListener("pointerup", dragScrollEnd, { passive: true });
-	window.removeEventListener("blur", dragScrollEnd, { passive: true })
+	window.removeEventListener("pointermove", dragScroll);
+	window.removeEventListener("pointerup", dragScrollEnd);
+	window.removeEventListener("blur", dragScrollEnd)
 }
 tabsOverlayTrack.addEventListener("pointerdown", ({ target, offsetX }) => {
 	if (target == tabsOverlayTrack) {

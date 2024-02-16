@@ -1,14 +1,14 @@
 import { Indexor } from "../indexor.mjs";
-import { parse as parseAH, parseAndGetNodes } from "/javascript/module/ArrayHTML.mjs";
+import { parse as parseAH, parseAndGetNodes, EVENT_LISTENERS } from "/javascript/module/ArrayHTML.mjs";
 import { createTab } from "../ui.mjs";
 import database from "../data.mjs";
 import MiniWindow from "/javascript/module/MiniWindow.mjs";
 const { stringify, parse } = JSON,
 	indexorStorage = database.getObjectStore("indexors"),
-	{ indexorFrame, index, indexorAdd, managementFrame } = parseAndGetNodes([
+	{ indexorFrame, index, managementFrame } = parseAndGetNodes([
 		["input", null, { id: "indexed_edit_index_set", type: "number", value: 0, min: 0, step: 1, max: 4294967295, title: "索引编号" }, "index"],
 		["div", null, { id: "indexed_edit_indexor_frame" }, "indexorFrame"],
-		["button", "+", { id: "indexed_edit_indexor_add", class: "default-color", title: "增加一个索引器" }, "indexorAdd"],
+		["button", "+", { id: "indexed_edit_indexor_add", class: "default-color", title: "增加一个索引器", [EVENT_LISTENERS]: [["click", newIndexor]] }],
 		["div", [
 
 		], { id: "indexed_edit_management" }, "managementFrame"]
@@ -21,7 +21,7 @@ class IndexorItem {
 	#titleElement;
 	get title() { return this.#title }
 	set title(value) {
-		if (typeof value != "string") throw new TypeError("invalid type");
+		if (typeof value != "string") throw new TypeError("Invalid type");
 		this.#titleElement.value = this.#title = value;
 	}
 	#userChangedTitle() { this.#title = this.#titleElement.value }
@@ -83,7 +83,7 @@ class IndexorItem {
 	#content;
 	get content() { return this.#content }
 	set content(value) {
-		if (typeof value != "string") throw new TypeError("invalid type");
+		if (typeof value != "string") throw new TypeError("Invalid type");
 		setContent(this.#node, this.#contentElement.value = this.#content = value.trim())
 	}
 	#userChangedContent() {
@@ -202,19 +202,17 @@ function loadSet({ indexors: indexorsSet, variables: variablesSet }) {
 
 
 
-// indexorAdd.addEventListener("click", newIndexor);
-
 loadSet(await indexorStorage.get("") ?? { variables: {}, indexors: [] });
 
 createTab("indexed_edit", "索引式编辑", [
 	["div", [
 		"索引变量",
-		["button", null, {class:"indexed_edit_options" ,title:"索引变量选项"}],
+		["button", null, { class: "indexed_edit_options", title: "索引变量选项" }],
 		index
 	], { id: "indexed_edit_variables" }],
 	["div", [
 		"索引器",
-		["button", null, {class:"indexed_edit_options" ,title:"索引器选项"}]
+		["button", null, { class: "indexed_edit_options", title: "索引器选项" }]
 	], { id: "indexed_edit_indexor" }],
 	indexorFrame,
 	managementFrame
