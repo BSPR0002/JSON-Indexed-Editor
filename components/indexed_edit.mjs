@@ -1,10 +1,9 @@
 import { Indexor } from "../indexor.mjs";
 import { parse as parseAH, parseAndGetNodes, EVENT_LISTENERS } from "/javascript/module/ArrayHTML.mjs";
 import { createTab } from "../ui.mjs";
-import database from "../data.mjs";
+import { config } from "../data.mjs";
 import MiniWindow from "/javascript/module/MiniWindow.mjs";
 const { stringify, parse } = JSON,
-	indexorStorage = database.getObjectStore("indexors"),
 	{ indexorFrame, index } = parseAndGetNodes([
 		["input", null, { id: "indexed-edit-index-set", type: "number", value: 0, min: 0, step: 1, max: 4294967295, title: "索引编号" }, "index"],
 		["div", null, { id: "indexed-edit-indexor-frame" }, "indexorFrame"],
@@ -199,7 +198,7 @@ function loadSet({ indexors: indexorsSet, variables: variablesSet }) {
 
 
 
-loadSet(await indexorStorage.get("") ?? { variables: {}, indexors: [] });
+loadSet(await config.get("currentIndexorSet0") ?? { variables: {}, indexors: [] });
 
 createTab("indexed-edit", "索引式编辑", [
 	["div", [
@@ -214,4 +213,4 @@ createTab("indexed-edit", "索引式编辑", [
 	indexorFrame
 ], false);
 
-export { updateAllIndexor };
+export { updateAllIndexor, loadSet };

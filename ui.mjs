@@ -1,8 +1,7 @@
-import database from "./data.mjs";
+import { uiData } from "./data.mjs";
 import { EVENT_LISTENERS, parseAndGetNodes } from "/javascript/module/ArrayHTML.mjs";
 // 预览窗格宽度控制
 const ceil = Math.ceil,
-	uiData = database.getObjectStore("UI"),
 	previewFrame = document.getElementById("preview-frame"),
 	previewFrameStyle = previewFrame.style,
 	previewSwitch = document.getElementById("preview-switch"),
@@ -111,7 +110,7 @@ function userChangeTab() {
 	pageFrame.innerHTML = "";
 	pageFrame.appendChild(tabItem.page);
 }
-function changeTap(tab) {
+function changeTab(tab) {
 	currentTab?.tab.classList.remove("current");
 	currentTab = tab;
 	const tabElement = tab.tab;
@@ -137,9 +136,8 @@ class TabItem extends EventTarget {
 		const { tab, page } = parseAndGetNodes([
 			["button", [
 				["span", title],
-				userClosable ?
-					["button", null, { class: "editor-tab-close", [EVENT_LISTENERS]: [["click", userCloseTab, { passive: true }]] }] : undefined
-			], { class: "editor-tab", draggable: true }, "tab"],
+				userClosable ? ["button", null, { class: "editor-tab-close", [EVENT_LISTENERS]: [["click", userCloseTab, { passive: true }]] }] : null
+			], { class: "editor-tab", draggable: true, [EVENT_LISTENERS]: [["click", userChangeTab, { passive: true }]] }, "tab"],
 			["div", content, { id: "editor-page-" + id }, "page"]
 		]).nodes;
 		super();
@@ -149,7 +147,6 @@ class TabItem extends EventTarget {
 		Object.freeze(this);
 		Object.defineProperty(tab, relation, { value: this });
 		Object.defineProperty(page, relation, { value: this });
-		tab.addEventListener("click", userChangeTab, { passive: true });
 		tabItems.push(this);
 		tabsElement.append(tab);
 	}
@@ -162,7 +159,7 @@ class TabItem extends EventTarget {
 		if (this != currentTab) return;
 		const length = tabItems.length;
 		if (length) {
-			changeTap(tabItems[index < length ? index : length - 1]);
+			changeTab(tabItems[index < length ? index : length - 1]);
 		} else {
 			currentTab = null;
 			pageFrame.innerHTML = "";
@@ -220,9 +217,9 @@ tabsElement.addEventListener("dragstart", ({ target }) => {
 function createTab(id, title, content, userClosable = true) {
 	const length = tabItems.length,
 		tab = new TabItem(id, title, content, userClosable);
-	if (!length) changeTap(tab);
+	if (!length) changeTab(tab);
 	return tab;
 }
 const tabItems = [];
 var currentTab = null;
-export { createTab, changeTap, getTab };
+export { createTab, changeTab, getTab };
