@@ -263,7 +263,7 @@ function buildNative(key, keyTitle, type, value, parent, top) {
 	const { node, content } = parseAndGetNodes([
 		["div", [
 			keyTitle,
-			["span", stringify(value), { class: "preview_value " + type }, "content"]
+			["span", stringify(value), { class: "preview-value " + type }, "content"]
 		], undefined, "node"]
 	]).nodes;
 	return new TreeNode(key, type, parent, node, content, top);
@@ -274,11 +274,11 @@ function buildObject(keyTitle, isArray, value, parent, top) {
 			["summary", [
 				keyTitle,
 				isArray ?
-					["span", value.length, { class: "preview_type Array" }] :
-					["span", Object.keys(value).length, { class: "preview_type Object" }]
+					["span", value.length, { class: "preview-type Array" }] :
+					["span", Object.keys(value).length, { class: "preview-type Object" }]
 			]],
-			["div", null, { class: "preview_children" }, "content"]
-		], { class: "preview_value object" }, "node"]
+			["div", null, { class: "preview-children" }, "content"]
+		], { class: "preview-value object" }, "node"]
 	]).nodes;
 	var self;
 	if (isArray) {
@@ -295,12 +295,12 @@ function buildSubObject(value, parent) {
 	const { children: sub, entries } = parent, keys = Object.keys(value), length = parent.toggleHeight = keys.length;
 	for (let i = 0; i < length; ++i) {
 		const key = keys[i];
-		sub.push(entries[key] = buildItem(key, parseAH([["span", stringify(key), { class: "preview_key" }]]), value[key], parent, i));
+		sub.push(entries[key] = buildItem(key, parseAH([["span", stringify(key), { class: "preview-key" }]]), value[key], parent, i));
 	};
 }
 function buildSubArray(value, parent) {
 	const sub = parent.children, length = parent.toggleHeight = value.length;
-	for (let i = 0; i < length; ++i) sub.push(buildItem(i, parseAH([["span", i, { class: "preview_key" }]]), value[i], parent, i));
+	for (let i = 0; i < length; ++i) sub.push(buildItem(i, parseAH([["span", i, { class: "preview-key" }]]), value[i], parent, i));
 }
 
 //菜单部分

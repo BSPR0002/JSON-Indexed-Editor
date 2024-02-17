@@ -3,9 +3,9 @@ import { EVENT_LISTENERS, parseAndGetNodes } from "/javascript/module/ArrayHTML.
 // 预览窗格宽度控制
 const ceil = Math.ceil,
 	uiData = database.getObjectStore("UI"),
-	previewFrame = document.getElementById("preview_frame"),
+	previewFrame = document.getElementById("preview-frame"),
 	previewFrameStyle = previewFrame.style,
-	previewSwitch = document.getElementById("preview_switch"),
+	previewSwitch = document.getElementById("preview-switch"),
 	rootStyle = document.documentElement.style;
 let previewFrameWidth, save = false, previewSwitchState = true;
 previewFrameStyle.width = (await uiData.get("previewFrameWidth") ?? 256) + "px";
@@ -25,7 +25,7 @@ function resizeEnd() {
 	resizeObserver.observe(previewFrame);
 	rootStyle.cursor = null;
 }
-document.getElementById("preview_resize").addEventListener("pointerdown", /* resizeStart */() => {
+document.getElementById("preview-resize").addEventListener("pointerdown", /* resizeStart */() => {
 	resizeObserver.disconnect();
 	window.addEventListener("pointermove", resize, { passive: true });
 	window.addEventListener("pointerup", resizeEnd, { passive: true });
@@ -43,11 +43,11 @@ previewSwitch.addEventListener("click", function () {
 	previewSwitch.blur();
 })
 // 选项卡控制
-const tabsElement = document.getElementById("editor_tabs"),
-	tabsOverlayTrack = document.getElementById("editor_tabs_scroll_bar"),
+const tabsElement = document.getElementById("editor-tabs"),
+	tabsOverlayTrack = document.getElementById("editor-tabs-scroll-bar"),
 	tabsOverlayTrackStyle = tabsOverlayTrack.style,
-	tabsOverlaySlide = document.getElementById("editor_tabs_scroll_bar_slide").style,
-	pageFrame = document.getElementById("editor_page"),
+	tabsOverlaySlide = document.getElementById("editor-tabs-scroll-bar-slide").style,
+	pageFrame = document.getElementById("editor-page"),
 	relation = Symbol("relation");
 var tabsWidth, tabsContentWidth, tabsSlideWidth, tabsSlideMotionSpace, tabsMotionSpace, dragScrollOrigin;
 function tabsChange() {
@@ -138,9 +138,9 @@ class TabItem extends EventTarget {
 			["button", [
 				["span", title],
 				userClosable ?
-					["button", null, { class: "editor_tab_close", [EVENT_LISTENERS]: [["click", userCloseTab, { passive: true }]] }] : undefined
-			], { class: "editor_tab", draggable: true }, "tab"],
-			["div", content, { id: "editor_page_" + id }, "page"]
+					["button", null, { class: "editor-tab-close", [EVENT_LISTENERS]: [["click", userCloseTab, { passive: true }]] }] : undefined
+			], { class: "editor-tab", draggable: true }, "tab"],
+			["div", content, { id: "editor-page-" + id }, "page"]
 		]).nodes;
 		super();
 		this.id = id;
@@ -181,9 +181,9 @@ function tabDragLeave(event) {
 }
 function tabDrop({ target, layerX }) {
 	var targetIndex;
-	if (target.className == "editor_tab_close") {
+	if (target.className == "editor-tab-close") {
 		targetIndex = tabItems.indexOf(target.parentNode[relation]);
-	} else if (target.classList.contains("editor_tab")) {
+	} else if (target.classList.contains("editor-tab")) {
 		targetIndex = tabItems.indexOf(target[relation]);
 	} else {
 		const lastIndex = tabItems.length - 1, lastTab = tabItems[lastIndex].tab;

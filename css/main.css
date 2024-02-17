@@ -40,7 +40,7 @@ body.open>#open {display: grid}
 	max-height: 100%;
 	aspect-ratio: 1;
 	overflow: hidden;
-	background-image: url(../icon-monochrome.svg);
+	background-image: url(../icon_monochrome.svg);
 	background-position: center;
 	background-size: contain;
 	background-repeat: no-repeat;
@@ -48,7 +48,7 @@ body.open>#open {display: grid}
 
 #work {grid-template-rows: 1.5rem 1fr}
 
-#select_file {
+#select-file {
 	place-self: center;
 	font-size: 1rem;
 	font-weight: bold;
@@ -57,46 +57,46 @@ body.open>#open {display: grid}
 	border-radius: 1rem;
 }
 
-#ui_frame {
+#ui-frame {
 	display: grid;
 	height: 100%;
 	overflow: hidden;
 	grid-template-columns: auto 1fr;
 }
-#ui_frame > div {
+#ui-frame > div {
 	display: grid;
 	grid-template-rows: 2rem 1fr;
 	overflow: hidden;
 }
 
-#preview_frame {
+#preview-frame {
 	grid-template-areas: "title switch""preview preview";
 	background-color: #333;
 	position: relative;
 }
-#preview_frame.on {
+#preview-frame.on {
 	min-width: 12rem;
 	max-width: 50vw;
 	width: 16rem;
 	grid-template-columns: 1fr 2rem;
 }
-#preview_frame.off {
+#preview-frame.off {
 	width: 2rem!important;
 	grid-template-areas: "switch""title";
 }
-#preview_frame.off > div {display: none}
-#preview_frame > span {
+#preview-frame.off > div {display: none}
+#preview-frame > span {
 	grid-area: title;
 	display: grid;
 	place-content: center start;
 	padding-inline-start: 0.5rem;
 	font-size: 0.875rem;
 }
-#preview_frame.off > span {
+#preview-frame.off > span {
 	writing-mode: vertical-rl;
 	text-orientation: sideways;
 }
-#preview_switch {
+#preview-switch {
 	grid-area: switch;
 	place-self: center;
 	height: 1.5rem;
@@ -106,10 +106,10 @@ body.open>#open {display: grid}
 	background-image: url(../buttons.svg);
 	background-position: 0 -1rem;
 }
-#preview_switch:hover {background-color: #444}
-#preview_switch:active {background-color: #111}
-#preview_frame.off > #preview_switch {background-position-x: -1.5rem}
-#preview_resize {
+#preview-switch:hover {background-color: #444}
+#preview-switch:active {background-color: #111}
+#preview-frame.off > #preview-switch {background-position-x: -1.5rem}
+#preview-resize {
 	position: absolute;
 	right: 0;
 	width: 0.25rem;
@@ -117,13 +117,13 @@ body.open>#open {display: grid}
 	cursor: ew-resize;
 }
 
-#editor_tabs_frame {
+#editor-tabs-frame {
 	position: relative;
 	overflow: hidden;
 	padding: 0 0.0625rem;
 	background-color: #000;
 }
-#editor_tabs {
+#editor-tabs {
 	height: 100%;
 	display: grid;
 	grid-auto-flow: column;
@@ -131,8 +131,8 @@ body.open>#open {display: grid}
 	overflow: auto hidden;
 	gap: 0.0625rem;
 }
-#editor_tabs::-webkit-scrollbar {height: 0}
-#editor_tabs_scroll_bar {
+#editor-tabs::-webkit-scrollbar {height: 0}
+#editor-tabs-scroll-bar {
 	position: absolute;
 	top: 0;
 	width: 100%;
@@ -140,15 +140,15 @@ body.open>#open {display: grid}
 	opacity: 0;
 	transition: opacity 0.5s;
 }
-#editor_tabs_frame:hover #editor_tabs_scroll_bar {opacity: 0.5}
-#editor_tabs_scroll_bar_slide {
+#editor-tabs-frame:hover #editor-tabs-scroll-bar {opacity: 0.5}
+#editor-tabs-scroll-bar-slide {
 	position: absolute;
 	height: 100%;
 	width: 100%;
 	background-color: #FFF;
 	pointer-events: none;
 }
-.editor_tab {
+.editor-tab {
 	min-width: 8rem;
 	display: grid;
 	grid-template-columns: 1fr 2rem;
@@ -162,17 +162,17 @@ body.open>#open {display: grid}
 	border-style: solid;
 	border-color: #000 transparent;
 }
-.editor_tab.current{border-bottom-color: #00BFFF}
-.editor_tab.current,.editor_tab:hover {background-color: #222}
-.editor_tab:active:focus {background-color: #444}
-.editor_tab > span {
+.editor-tab.current{border-bottom-color: #00BFFF}
+.editor-tab.current,.editor-tab:hover {background-color: #222}
+.editor-tab:active:focus {background-color: #444}
+.editor-tab > span {
 	font-size: 0.875rem;
 	place-self: center start;
 	padding-left: 0.5rem;
 	word-break: keep-all;
 	pointer-events: none;
 }
-.editor_tab_close {
+.editor-tab-close {
 	place-self: center;
 	height: 1rem;
 	width: 1rem;
@@ -181,23 +181,23 @@ body.open>#open {display: grid}
 	background-image: url(../buttons.svg);
 	background-position: 0 0;
 }
-.editor_tab_close:hover {background-color: #555}
-.editor_tab_close:active {background-color: #000}
+.editor-tab-close:hover {background-color: #555}
+.editor-tab-close:active {background-color: #000}
 
-#editor_page {overflow: hidden}
-#editor_page > div {height: 100%}
+#editor-page {overflow: hidden}
+#editor-page > div {height: 100%}
 
-#file_name_frame,#menu {
+#file-name-frame,#menu {
 	display: grid;
 	height: 100%;
 	padding: 0 0.5rem;
 	white-space: nowrap;
 }
-#file_name_frame{
+#file-name-frame{
 	background-color: #00BFFF;
 	place-content: center start;
 }
-#file_name {
+#file-name {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	color: #000;
@@ -209,17 +209,17 @@ body.open>#open {display: grid}
 	grid-auto-columns: 5.1875rem;
 }
 
-.menu_item,.menu_option {
+.menu-item,.menu-option {
 	height: 100%;
 	display: grid;
 	place-content: center start;
 	padding: 0 0.25rem;
 	font-size: 0.9375rem;
 }
-.menu_item {position: relative}
-.menu_item:hover {background-color: #444}
-.menu_item:focus-within {background-color: #333}
-.menu_expand {
+.menu-item {position: relative}
+.menu-item:hover {background-color: #444}
+.menu-item:focus-within {background-color: #333}
+.menu-expand {
 	display: none;
 	position: absolute;
 	z-index: 2;
@@ -229,18 +229,18 @@ body.open>#open {display: grid}
 	background-color: #333;
 	border: solid 0.0625rem #555;
 }
-.menu_item:focus-within>.menu_expand {
+.menu-item:focus-within>.menu-expand {
 	display: grid;
 	grid-auto-rows: 1.5rem;
 }
-.menu_option {
+.menu-option {
 	background-color: transparent;
 	color: #FFF;
 	border: 0;
 	border-radius: 0;
 }
-.menu_option:hover {background-color: #0060A0}
-.menu_option:active:not(:hover) {background-color: #D08000}
+.menu-option:hover {background-color: #0060A0}
+.menu-option:active:not(:hover) {background-color: #D08000}
 
 #preview {
 	height: 100%;
@@ -255,44 +255,44 @@ body.open>#open {display: grid}
 	white-space: nowrap;
 }
 
-.preview_key {
+.preview-key {
 	margin-inline-end: 0.5rem;
 	user-select: text;
 }
-.preview_key::after {content: ":"}
+.preview-key::after {content: ":"}
 
-.preview_value {
+.preview-value {
 	min-width: 100%;
 	width: max-content;
 	user-select: text;
 }
 
-.preview_value.string {color: #FFFF00}
-.preview_value.number {color: #00FF00}
-.preview_value.boolean {color: #0060FF}
-.preview_value.null,.preview_value.undefined {color: #FF00FF}
+.preview-value.string {color: #FFFF00}
+.preview-value.number {color: #00FF00}
+.preview-value.boolean {color: #0060FF}
+.preview-value.null,.preview-value.undefined {color: #FF00FF}
 
-.preview_value.object {
+.preview-value.object {
 	border: 0;
 	padding: 0;
 	border-radius: 0;
 }
 
-.preview_value.object>summary {
+.preview-value.object>summary {
 	border: 0;
 	margin: 0;
 	padding: 0;
 }
 
-.preview_children {
+.preview-children {
 	display: grid;
 	margin-left: 2rem;
 }
 
-.preview_type.Array::before {content: "数组["}
-.preview_type.Array::after {content: "]"}
-.preview_type.Array {color: #FF0000}
+.preview-type.Array::before {content: "数组["}
+.preview-type.Array::after {content: "]"}
+.preview-type.Array {color: #FF0000}
 
-.preview_type.Object::before {content: "对象{"}
-.preview_type.Object::after {content: "}"}
-.preview_type.Object {color: #00BFFF}
+.preview-type.Object::before {content: "对象{"}
+.preview-type.Object::after {content: "}"}
+.preview-type.Object {color: #00BFFF}

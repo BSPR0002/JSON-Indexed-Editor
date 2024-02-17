@@ -5,13 +5,10 @@ import database from "../data.mjs";
 import MiniWindow from "/javascript/module/MiniWindow.mjs";
 const { stringify, parse } = JSON,
 	indexorStorage = database.getObjectStore("indexors"),
-	{ indexorFrame, index, managementFrame } = parseAndGetNodes([
-		["input", null, { id: "indexed_edit_index_set", type: "number", value: 0, min: 0, step: 1, max: 4294967295, title: "索引编号" }, "index"],
-		["div", null, { id: "indexed_edit_indexor_frame" }, "indexorFrame"],
-		["button", "+", { id: "indexed_edit_indexor_add", class: "default-color", title: "增加一个索引器", [EVENT_LISTENERS]: [["click", newIndexor]] }],
-		["div", [
-
-		], { id: "indexed_edit_management" }, "managementFrame"]
+	{ indexorFrame, index } = parseAndGetNodes([
+		["input", null, { id: "indexed-edit-index-set", type: "number", value: 0, min: 0, step: 1, max: 4294967295, title: "索引编号" }, "index"],
+		["div", null, { id: "indexed-edit-indexor-frame" }, "indexorFrame"],
+		["button", "+", { id: "indexed-edit-indexor-add", class: "default-color", title: "增加一个索引器", [EVENT_LISTENERS]: [["click", newIndexor]] }]
 	]).nodes;
 //索引器部分
 var indexors, variables = null;
@@ -41,7 +38,7 @@ class IndexorItem {
 		const path = this.#pathElement,
 			content = this.#contentElement;
 		content.value = "";
-		content.className = "indexor_content";
+		content.className = "indexor-content";
 		var node;
 		try {
 			node = this.#node = this.#indexor.getNode(variables);
@@ -49,11 +46,11 @@ class IndexorItem {
 			this.#node = null;
 			content.disabled = true;
 			content.placeholder = "索引路径错误";
-			path.className = "indexor_path invalid";
+			path.className = "indexor-path invalid";
 			return;
 		}
 		if (!node) {
-			path.className = "indexor_path";
+			path.className = "indexor-path";
 			content.disabled = true;
 			content.placeholder = "索引路径无效";
 			return;
@@ -63,7 +60,7 @@ class IndexorItem {
 			case "string":
 			case "number":
 			case "boolean":
-				path.className = "indexor_path " + type;
+				path.className = "indexor-path " + type;
 				content.disabled = false;
 				content.placeholder = "请输入内容";
 				content.value = stringify(node.value);
@@ -77,7 +74,7 @@ class IndexorItem {
 				content.disabled = true;
 				content.placeholder = "无法编辑的类型";
 		}
-		path.className = "indexor_path";
+		path.className = "indexor-path";
 	}
 	#contentElement;
 	#content;
@@ -88,17 +85,17 @@ class IndexorItem {
 	}
 	#userChangedContent() {
 		const contentElement = this.#contentElement;
-		contentElement.className = setContent(this.#node, this.#content = contentElement.value.trim()) ? "indexor_content" : "indexor_content invalid";
+		contentElement.className = setContent(this.#node, this.#content = contentElement.value.trim()) ? "indexor-content" : "indexor-content invalid";
 	}
 	#element;
 	get element() { return this.#element }
 	constructor(title = "", path = "") {
 		const nodes = parseAndGetNodes([["div", [
-			["input", null, { class: "indexor_title", spellcheck: "false", placeholder: "索引器标题" }, "title"],
-			["button", null, { class: "indexor_remove", title: "移除索引器" }, "remove"],
-			["span", "索引路径：", { class: "indexor_path_d" }],
-			["input", null, { class: "indexor_path", spellcheck: "false", placeholder: "索引编号变量：i" }, "path"],
-			["input", null, { class: "indexor_content", spellcheck: "false", placeholder: "请输入内容" }, "content"]
+			["input", null, { class: "indexor-title", spellcheck: "false", placeholder: "索引器标题" }, "title"],
+			["button", null, { class: "indexor-remove", title: "移除索引器" }, "remove"],
+			["span", "索引路径：", { class: "indexor-path-d" }],
+			["input", null, { class: "indexor-path", spellcheck: "false", placeholder: "索引编号变量：i" }, "path"],
+			["input", null, { class: "indexor-content", spellcheck: "false", placeholder: "请输入内容" }, "content"]
 		], { class: "indexor" }, "element"]]).nodes;
 		nodes.remove.addEventListener("click", removeIndexor.bind(null, this));
 		this.#element = nodes.element;
@@ -163,8 +160,8 @@ function indexorDataMapper(item) { return ["div", [["span", ["名称：", item.t
 function buildIndexorData(message, data) {
 	return parseAH([["div", [
 		["span", message],
-		["div", data.length ? data.map(indexorDataMapper) : "空", { class: "indexor_data" }]
-	], { class: "indexor_data_frame" }]])
+		["div", data.length ? data.map(indexorDataMapper) : "空", { class: "indexor-data" }]
+	], { class: "indexor-data-frame" }]])
 }
 
 
@@ -204,18 +201,17 @@ function loadSet({ indexors: indexorsSet, variables: variablesSet }) {
 
 loadSet(await indexorStorage.get("") ?? { variables: {}, indexors: [] });
 
-createTab("indexed_edit", "索引式编辑", [
+createTab("indexed-edit", "索引式编辑", [
 	["div", [
 		"索引变量",
-		["button", null, { class: "indexed_edit_options", title: "索引变量选项" }],
+		["button", null, { class: "indexed-edit-options", title: "索引变量选项" }],
 		index
-	], { id: "indexed_edit_variables" }],
+	], { id: "indexed-edit-variables" }],
 	["div", [
 		"索引器",
-		["button", null, { class: "indexed_edit_options", title: "索引器选项" }]
-	], { id: "indexed_edit_indexor" }],
-	indexorFrame,
-	managementFrame
+		["button", null, { class: "indexed-edit-options", title: "索引器选项" }]
+	], { id: "indexed-edit-indexor" }],
+	indexorFrame
 ], false);
 
-export { createTab, updateAllIndexor };
+export { updateAllIndexor };

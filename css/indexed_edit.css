@@ -1,14 +1,14 @@
-#editor_page_indexed_edit {
+#editor-page-indexed-edit {
 	display: grid;
 	grid-template-rows: 2rem 2rem 1fr;
 	overflow: hidden;
 }
-#editor_page_indexed_edit > div {
+#editor-page-indexed-edit > div {
 	display: grid;
 	height: 100%;
 }
 
-#indexed_edit_variables,#indexed_edit_indexor {
+#indexed-edit-variables,#indexed-edit-indexor {
 	background-color: #333;
 	padding: 0 0.5rem;
 	grid-template-columns: auto 2rem;
@@ -17,9 +17,9 @@
 	gap: 0.5rem;
 	text-wrap: nowrap;
 }
-#indexed_edit_variables { grid-template-columns: auto 2rem 1fr }
+#indexed-edit-variables { grid-template-columns: auto 2rem 1fr }
 
-.indexed_edit_options {
+.indexed-edit-options {
 	width: 1.5rem;
 	height: 1.5rem;
 	justify-self: center;
@@ -28,10 +28,10 @@
 	background-image: url(../buttons.svg);
 	background-position: -3rem -1rem;
 }
-.indexed_edit_options:hover { background-color: #444 }
-.indexed_edit_options:active { background-color: #111 }
+.indexed-edit-options:hover { background-color: #444 }
+.indexed-edit-options:active { background-color: #111 }
 
-#indexed_edit_index_set {
+#indexed-edit-index-set {
 	border: solid #000 0.125rem;
 	border-radius: 0.25rem;
 	height: 1.5rem;
@@ -40,12 +40,12 @@
 	text-align: end;
 }
 
-#indexed_edit_indexor_add {
+#indexed-edit-indexor-add {
 	width: 1.5rem;
 	height: 1.5rem;
 }
 
-#indexed_edit_indexor_frame {
+#indexed-edit-indexor-frame {
 	padding: 0.5rem;
 	overflow-y: auto;
 	grid-auto-rows: min-content;
@@ -72,11 +72,11 @@
 	background-color: #222;
 	color: #FFF;
 }
-.indexor_title {
+.indexor-title {
 	grid-area: title;
 	color: #00BFFF !important;
 }
-.indexor_remove {
+.indexor-remove {
 	grid-area: remove;
 	width: 1.75rem;
 	height: 1.75rem;
@@ -85,9 +85,9 @@
 	display: block;
 	position: relative;
 }
-.indexor_remove:hover {background-color: var(--hoverColor)}
-.indexor_remove:active {background-color: var(--activeColor)}
-.indexor_remove:before,.indexor_remove:after {
+.indexor-remove:hover {background-color: var(--hoverColor)}
+.indexor-remove:active {background-color: var(--activeColor)}
+.indexor-remove:before,.indexor-remove:after {
 	content: "";
 	position: absolute;
 	display: block;
@@ -99,30 +99,30 @@
 	transform: rotate(45deg);
 	border-radius: 0.0625rem;
 }
-.indexor_remove:after {transform: rotate(135deg)}
-.indexor_path_d {grid-area: pathd}
-.indexor_path {
+.indexor-remove:after {transform: rotate(135deg)}
+.indexor-path-d {grid-area: pathd}
+.indexor-path {
 	grid-area: path;
 	border: solid 0.125rem transparent !important;
 	padding: 0 0.25rem !important;
 }
-.indexor_content {grid-area: content}
-.indexor_content:disabled {background-color: #800000}
-.indexor_content:disabled::placeholder {color: #808080}
-.indexor_content.invalid {color:#F00 !important}
-.indexor_path.invalid {border-color: #F00 !important}
-.indexor_path.string {border-color: #FF0 !important}
-.indexor_path.number {border-color: #0F0 !important}
-.indexor_path.boolean {border-color: #0060FF !important}
+.indexor-content {grid-area: content}
+.indexor-content:disabled {background-color: #800000}
+.indexor-content:disabled::placeholder {color: #808080}
+.indexor-content.invalid {color:#F00 !important}
+.indexor-path.invalid {border-color: #F00 !important}
+.indexor-path.string {border-color: #FF0 !important}
+.indexor-path.number {border-color: #0F0 !important}
+.indexor-path.boolean {border-color: #0060FF !important}
 
-.indexor_data_frame {
+.indexor-data-frame {
 	display: grid;
 	grid-template-rows: auto 1fr;
 	gap: 0.5rem;
 	height: 100%;
 	overflow: hidden;
 }
-.indexor_data {
+.indexor-data {
 	display: grid;
 	padding: 0 0.5rem;
 	gap: 0.5rem;
