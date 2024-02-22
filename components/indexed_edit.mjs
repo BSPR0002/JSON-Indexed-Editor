@@ -13,14 +13,14 @@ const { stringify, parse } = JSON,
 var indexors, variables = null;
 class IndexorItem {
 	#indexor = new Indexor;
-	#title = "";
-	#titleElement;
-	get title() { return this.#title }
-	set title(value) {
+	#name = "";
+	#nameElement;
+	get name() { return this.#name }
+	set name(value) {
 		if (typeof value != "string") throw new TypeError("Invalid type");
-		this.#titleElement.value = this.#title = value;
+		this.#nameElement.value = this.#name = value;
 	}
-	#userChangedTitle() { this.#title = this.#titleElement.value }
+	#userChangedTitle() { this.#name = this.#nameElement.value }
 	#pathElement;
 	get path() { return this.#indexor.path }
 	set path(value) {
@@ -88,9 +88,9 @@ class IndexorItem {
 	}
 	#element;
 	get element() { return this.#element }
-	constructor(title = "", path = "") {
+	constructor(name = "", path = "") {
 		const nodes = parseAndGetNodes([["div", [
-			["input", null, { class: "indexor-title", spellcheck: "false", placeholder: "索引器标题" }, "title"],
+			["input", null, { class: "indexor-name", spellcheck: "false", placeholder: "索引器名称" }, "name"],
 			["button", null, { class: "indexor-remove", title: "移除索引器" }, "remove"],
 			["span", "索引路径：", { class: "indexor-path-d" }],
 			["input", null, { class: "indexor-path", spellcheck: "false", placeholder: "索引编号变量：i" }, "path"],
@@ -98,11 +98,11 @@ class IndexorItem {
 		], { class: "indexor" }, "element"]]).nodes;
 		nodes.remove.addEventListener("click", removeIndexor.bind(null, this));
 		this.#element = nodes.element;
-		const titleElement = this.#titleElement = nodes.title,
+		const nameElement = this.#nameElement = nodes.name,
 			pathElement = this.#pathElement = nodes.path;
-		titleElement.addEventListener("input", this.#userChangedTitle.bind(this));
+		nameElement.addEventListener("input", this.#userChangedTitle.bind(this));
 		pathElement.addEventListener("input", this.#userChangedPath.bind(this));
-		titleElement.value = title;
+		nameElement.value = name;
 		pathElement.value = this.#indexor.path = path;
 		(this.#contentElement = nodes.content).addEventListener("input", this.#userChangedContent.bind(this));
 	}
@@ -155,7 +155,7 @@ function setContent(node, content) {
 
 const identifierRegexp = /^[A-Za-z_$][\w$]*$/;
 
-function indexorDataMapper(item) { return ["div", [["span", ["名称：", item.title]], ["br"], ["span", ["路径：", item.path]]]] }
+function indexorDataMapper(item) { return ["div", [["span", ["名称：", item.name]], ["br"], ["span", ["路径：", item.path]]]] }
 function buildIndexorData(message, data) {
 	return parseAH([["div", [
 		["span", message],
@@ -177,8 +177,8 @@ function loadSet({ indexors: indexorsSet, variables: variablesSet }) {
 	}
 	if (indexorsSet.length) {
 		const fragment = new DocumentFragment;
-		for (const { title, path } of indexorsSet) {
-			const item = new IndexorItem(title, path);
+		for (const { name, path } of indexorsSet) {
+			const item = new IndexorItem(name, path);
 			indexors.push(item);
 			fragment.appendChild(item.element);
 		}
@@ -198,7 +198,7 @@ function loadSet({ indexors: indexorsSet, variables: variablesSet }) {
 
 
 
-loadSet(await config.get("currentIndexorSet0") ?? { variables: {}, indexors: [] });
+loadSet(await config.get("currentIndexorSet") ?? { variables: {}, indexors: [] });
 
 createTab("indexed-edit", "索引式编辑", [
 	["div", [

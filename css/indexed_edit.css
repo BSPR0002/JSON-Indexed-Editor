@@ -59,7 +59,7 @@
 	gap: 0.5rem;
 	grid-template-columns: auto 1fr auto;
 	grid-template-rows: repeat(3, 1.75rem);
-	grid-template-areas: "title title remove""pathd path path""content content content";
+	grid-template-areas: "name name remove""pathd path path""content content content";
 	align-items: center;
 }
 .indexor>input {
@@ -71,8 +71,8 @@
 	background-color: #222;
 	color: #FFF;
 }
-.indexor-title {
-	grid-area: title;
+.indexor-name {
+	grid-area: name;
 	color: #00BFFF !important;
 }
 .indexor-remove {
