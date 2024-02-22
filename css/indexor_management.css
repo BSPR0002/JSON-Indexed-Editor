@@ -1,0 +1,158 @@
+#editor-page-indexor-management {
+	display: grid;
+	grid-template-columns: 16rem 1fr;
+	overflow: hidden;
+}
+
+#indexor-management-list-frame {
+	background-color: #000;
+
+}
+
+#indexor-management-list-title {
+	padding: 0.25rem;
+	color: #00BFFF;
+	background-color: #333;
+	text-align: center;
+}
+
+.indexor-management-set {
+	display: grid;
+	padding: 0.5rem;
+	width: 100%;
+	background-color: #555;
+	font-size: 1rem;
+	text-align: start;
+	border-radius: 0;
+	gap: 0.25rem;
+	grid-template-columns: 1fr 1rem;
+	grid-template-areas: "name arrow" "detail arrow";
+	border-width: 0.0625rem 0;
+	border-color: #000;
+	border-style: solid;
+}
+
+.indexor-management-set-name {
+	font-size: 1rem;
+}
+
+.indexor-management-set-detail {
+	font-size: 0.75rem;
+	color: #888;
+	grid-area: detail;
+}
+
+.indexor-management-set-name,
+.indexor-management-set-detail {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.indexor-management-set::after {
+	grid-area: arrow;
+	content: "";
+	width: 1rem;
+	height: 1rem;
+	background-image: url(../buttons.svg);
+	background-position: -2rem 0;
+	place-self: center;
+}
+
+.indexor-management-set:active {
+	background-color: #444;
+	pointer-events: none;
+}
+
+.indexor-management-set.current {
+	background-color: #111;
+	pointer-events: none;
+}
+
+.indexor-management-set.current::after {
+	display: none;
+}
+
+#indexor-management-detail {
+	display: grid;
+	grid-template-rows: auto 1fr;
+
+}
+
+#indexor-management-detail-top {
+	display: grid;
+	background-color: #222;
+	padding: 1rem;
+	gap: 0.5rem;
+}
+
+#indexor-management-detail-name {
+	font-size: 2rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#indexor-management-detail-buttons {
+	display: grid;
+	grid-auto-flow: column;
+	overflow: auto hidden;
+	justify-content: start;
+	gap: 0.5rem;
+}
+
+#indexor-management-detail-buttons>button {
+	padding: 0.25rem;
+	font-size: 0.875rem;
+	white-space: nowrap;
+}
+
+#indexor-management-detail-content {
+	display: grid;
+	gap: 1rem;
+	padding: 1rem;
+	align-content: start;
+	overflow: hidden auto;
+	grid-template-columns: 100%;
+}
+
+.indexor-management-detail-part {
+	display: grid;
+	gap: 0.5rem;
+}
+
+.indexor-management-detail-part>span {
+	color: #00BFFF;
+}
+
+.indexor-management-detail-part-content {
+	font-size: 0.75rem;
+	overflow: hidden;
+}
+
+#indexor-management-detail-variables {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem;
+}
+
+#indexor-management-detail-variables>span {
+	background-color: #333;
+	padding: 0.25rem;
+	border-radius: 0.25rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#indexor-management-detail-indexores {
+	display: grid;
+	gap: 0.5rem;
+}
+
+#indexor-management-detail-indexores>div {
+	display: grid;
+	grid-template-columns: max-content 1fr;
+}
+
+#indexor-management-detail-indexores>div>:nth-child(odd) {
+	justify-self: end;
+}
