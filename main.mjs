@@ -7,21 +7,24 @@ document.getElementById("select-file").addEventListener("click", async function 
 async function loadFile(fileHandle) {
 	if (pending || working) return;
 	pending = true;
-	const waitWin = new MiniWindow("正在加载，请稍等……", "请稍等", { noManualClose: true });
+	const closeWaitWin = MiniWindow.wait("正在加载，请稍等……");
 	let data
 	try {
 		data = JSON.parse(await read(await fileHandle.getFile(), readableTypes.TEXT));
 		fileHandle.requestPermission({ mode: "readwrite" });
 	} catch (error) {
+		pending = false;
 		new MiniWindow("无法解读该文件，请选择正确的 JSON 文件。", "错误！");
+		closeWaitWin();
+		return;
 	}
 	startWork(data, fileHandle);
 	document.title = fileHandle.name;
 	pending = false;
-	waitWin.close();
+	closeWaitWin();
 }
 function preventDefault(event) { event.preventDefault() }
-document.addEventListener("dragover", event =>{
+document.addEventListener("dragover", event => {
 	event.preventDefault();
 	event.dataTransfer.dropEffect = "none";
 });

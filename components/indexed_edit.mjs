@@ -1,8 +1,8 @@
 import { Indexor } from "../indexor.mjs";
 import { parse as parseAH, parseAndGetNodes, EVENT_LISTENERS } from "/javascript/module/ArrayHTML.mjs";
 import { createTab } from "../ui.mjs";
-import { config } from "../data.mjs";
 import MiniWindow from "/javascript/module/MiniWindow.mjs";
+import { currentSet, modifyCurrentSet } from "./indexor_management.mjs";
 const { stringify, parse } = JSON,
 	{ indexorFrame, index } = parseAndGetNodes([
 		["input", null, { id: "indexed-edit-index-set", type: "number", value: 0, min: 0, step: 1, max: 4294967295, title: "索引编号" }, "index"],
@@ -10,7 +10,7 @@ const { stringify, parse } = JSON,
 		["button", "+", { id: "indexed-edit-indexor-add", class: "default-color", title: "增加一个索引器", [EVENT_LISTENERS]: [["click", newIndexor]] }]
 	]).nodes;
 //索引器部分
-var indexors, variables = null;
+var indexors, variables = [];
 class IndexorItem {
 	#indexor = new Indexor;
 	#name = "";
@@ -20,7 +20,7 @@ class IndexorItem {
 		if (typeof value != "string") throw new TypeError("Invalid type");
 		this.#nameElement.value = this.#name = value;
 	}
-	#userChangedTitle() { this.#name = this.#nameElement.value }
+	#userChangedName() { this.#name = this.#nameElement.value }
 	#pathElement;
 	get path() { return this.#indexor.path }
 	set path(value) {
@@ -90,21 +90,18 @@ class IndexorItem {
 	get element() { return this.#element }
 	constructor(name = "", path = "") {
 		const nodes = parseAndGetNodes([["div", [
-			["input", null, { class: "indexor-name", spellcheck: "false", placeholder: "索引器名称" }, "name"],
-			["button", null, { class: "indexor-remove", title: "移除索引器" }, "remove"],
+			["input", null, { class: "indexor-name", spellcheck: "false", placeholder: "索引器名称", value: name, [EVENT_LISTENERS]: [["input", this.#userChangedName.bind(this)]] }, "name"],
+			["button", null, { class: "indexor-remove", title: "移除索引器", [EVENT_LISTENERS]: [["click", removeIndexor.bind(null, this)]] }],
 			["span", "索引路径：", { class: "indexor-path-d" }],
-			["input", null, { class: "indexor-path", spellcheck: "false", placeholder: "索引编号变量：i" }, "path"],
-			["input", null, { class: "indexor-content", spellcheck: "false", placeholder: "请输入内容" }, "content"]
+			["input", null, { class: "indexor-path", spellcheck: "false", placeholder: "索引路径", value: path, [EVENT_LISTENERS]: [["input", this.#userChangedPath.bind(this)]] }, "path"],
+			["input", null, { class: "indexor-content", spellcheck: "false", placeholder: "请输入内容", [EVENT_LISTENERS]: [["input", this.#userChangedContent.bind(this)]] }, "content"]
 		], { class: "indexor" }, "element"]]).nodes;
-		nodes.remove.addEventListener("click", removeIndexor.bind(null, this));
 		this.#element = nodes.element;
-		const nameElement = this.#nameElement = nodes.name,
-			pathElement = this.#pathElement = nodes.path;
-		nameElement.addEventListener("input", this.#userChangedTitle.bind(this));
-		pathElement.addEventListener("input", this.#userChangedPath.bind(this));
-		nameElement.value = name;
-		pathElement.value = this.#indexor.path = path;
-		(this.#contentElement = nodes.content).addEventListener("input", this.#userChangedContent.bind(this));
+		this.#nameElement = nodes.name;
+		this.#pathElement = nodes.path;
+		this.#contentElement = nodes.content;
+		this.#name = name;
+		this.#indexor.path = path;
 	}
 	update() { this.#updateNode() }
 	static {
@@ -125,6 +122,7 @@ async function removeIndexor(instance) {
 	if (i != -1 && await MiniWindow.confirm("确定要移除这个索引器吗？")) {
 		indexors.splice(i, 1);
 		instance.element.remove();
+		modifyCurrentSet({ indexors, variables });
 	}
 }
 async function removeAllIndexor() {
@@ -168,16 +166,16 @@ async function userLoadSet() {
 	//TODO
 }
 
-function loadSet({ indexors: indexorsSet, variables: variablesSet }) {
+function loadSet() {
+	const { indexors: indexorSet, variables: variableSet } = currentSet;
 	indexorFrame.innerHTML = "";
-	variables = variablesSet;
 	indexors = [];
-	for (const index in variables) {
+	for (const index in variableSet) {
 		//TODO
 	}
-	if (indexorsSet.length) {
+	if (indexorSet.length) {
 		const fragment = new DocumentFragment;
-		for (const { name, path } of indexorsSet) {
+		for (const { name, path } of indexorSet) {
 			const item = new IndexorItem(name, path);
 			indexors.push(item);
 			fragment.appendChild(item.element);
@@ -198,7 +196,7 @@ function loadSet({ indexors: indexorsSet, variables: variablesSet }) {
 
 
 
-loadSet(await config.get("currentIndexorSet") ?? { variables: {}, indexors: [] });
+loadSet();
 
 createTab("indexed-edit", "索引式编辑", [
 	["div", [
