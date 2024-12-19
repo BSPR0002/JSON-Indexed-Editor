@@ -3,7 +3,9 @@ import { parse as parseAH, parseAndGetNodes, EVENT_LISTENERS } from "/javascript
 import { createTab } from "../ui.mjs";
 import MiniWindow from "/javascript/module/MiniWindow.mjs";
 import { currentSet, modifyCurrentSet } from "./indexor_management.mjs";
+import showMenu from "/javascript/module/ContextMenu.mjs";
 const { stringify, parse } = JSON,
+	/** @ts-ignore @type {{indexorFrame: HTMLDivElement, index: HTMLInputElement}} */
 	{ indexorFrame, index } = parseAndGetNodes([
 		["input", null, { id: "indexed-edit-index-set", type: "number", value: 0, min: 0, step: 1, max: 4294967295, title: "索引编号" }, "index"],
 		["div", null, { id: "indexed-edit-indexor-frame" }, "indexorFrame"],
@@ -14,6 +16,7 @@ var indexors, variables = [];
 class IndexorItem {
 	#indexor = new Indexor;
 	#name = "";
+	/** @type {HTMLInputElement} */
 	#nameElement;
 	get name() { return this.#name }
 	set name(value) {
@@ -21,6 +24,7 @@ class IndexorItem {
 		this.#nameElement.value = this.#name = value;
 	}
 	#userChangedName() { this.#name = this.#nameElement.value }
+	/** @type {HTMLInputElement} */
 	#pathElement;
 	get path() { return this.#indexor.path }
 	set path(value) {
@@ -75,6 +79,7 @@ class IndexorItem {
 		}
 		path.className = "indexor-path";
 	}
+	/** @type {HTMLInputElement} */
 	#contentElement;
 	#content;
 	get content() { return this.#content }
@@ -86,6 +91,7 @@ class IndexorItem {
 		const contentElement = this.#contentElement;
 		contentElement.className = setContent(this.#node, this.#content = contentElement.value.trim()) ? "indexor-content" : "indexor-content invalid";
 	}
+	/** @type {HTMLDivElement} */
 	#element;
 	get element() { return this.#element }
 	constructor(name = "", path = "") {
@@ -96,9 +102,13 @@ class IndexorItem {
 			["input", null, { class: "indexor-path", spellcheck: "false", placeholder: "索引路径", value: path, [EVENT_LISTENERS]: [["input", this.#userChangedPath.bind(this)]] }, "path"],
 			["input", null, { class: "indexor-content", spellcheck: "false", placeholder: "请输入内容", [EVENT_LISTENERS]: [["input", this.#userChangedContent.bind(this)]] }, "content"]
 		], { class: "indexor" }, "element"]]).nodes;
+		// @ts-ignore
 		this.#element = nodes.element;
+		// @ts-ignore
 		this.#nameElement = nodes.name;
+		// @ts-ignore
 		this.#pathElement = nodes.path;
+		// @ts-ignore
 		this.#contentElement = nodes.content;
 		this.#name = name;
 		this.#indexor.path = path;
@@ -193,20 +203,33 @@ function loadSet() {
 
 
 
-
-
-
 loadSet();
+
+function holdMenu(element, list) {
+	const classList = element.classList;
+	classList.add("hold");
+	showMenu(list, { element }, { darkStyle: true, onClose: onMenuClose.bind(null, classList) });
+}
+function onMenuClose(classList) { classList.remove("hold") }
+
+const indexorMenu = [],
+	variableMenu = [];
 
 createTab("indexed-edit", "索引式编辑", [
 	["div", [
 		"索引变量",
-		["button", null, { class: "indexed-edit-options", title: "索引变量选项" }],
+		["button", null, {
+			class: "indexed-edit-options", title: "索引变量选项",
+			[EVENT_LISTENERS]: [["click", function () { holdMenu(this, indexorMenu) }]]
+		}],
 		index
 	], { id: "indexed-edit-variables" }],
 	["div", [
 		"索引器",
-		["button", null, { class: "indexed-edit-options", title: "索引器选项" }]
+		["button", null, {
+			class: "indexed-edit-options", title: "索引器选项",
+			[EVENT_LISTENERS]: [["click", function () { holdMenu(this, variableMenu) }]]
+		}]
 	], { id: "indexed-edit-indexor" }],
 	indexorFrame
 ], false);

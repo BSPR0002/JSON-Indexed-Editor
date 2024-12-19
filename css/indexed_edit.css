@@ -29,6 +29,10 @@
 }
 .indexed-edit-options:hover { background-color: #444 }
 .indexed-edit-options:active { background-color: #111 }
+.indexed-edit-options.hold {
+	background-color: #111;
+	pointer-events: none;
+}
 
 #indexed-edit-index-set {
 	border: solid #000 0.125rem;
