@@ -8,8 +8,7 @@ const { stringify, parse } = JSON,
 	/** @ts-ignore @type {{indexorFrame: HTMLDivElement, index: HTMLInputElement}} */
 	{ indexorFrame, index } = parseAndGetNodes([
 		["input", null, { id: "indexed-edit-index-set", type: "number", value: 0, min: 0, step: 1, max: 4294967295, title: "索引编号" }, "index"],
-		["div", null, { id: "indexed-edit-indexor-frame" }, "indexorFrame"],
-		["button", "+", { id: "indexed-edit-indexor-add", class: "default-color", title: "增加一个索引器", [EVENT_LISTENERS]: [["click", newIndexor]] }]
+		["div", null, { id: "indexed-edit-indexor-frame" }, "indexorFrame"]
 	]).nodes;
 //索引器部分
 var indexors, variables = [];

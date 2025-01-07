@@ -43,9 +43,11 @@ async function modifyCurrentSet(data) {
 async function updateSetsList() {
 	list.innerHTML = "";
 	const setsList = await indexorStorage.getAll(),
+		// @ts-ignore
 		elements = sets = parseAndGetNodes(setsList.map(buildSet), list);
 	for (const item of setsList) {
 		const name = item.name;
+		// @ts-ignore
 		elements[name] = {
 			data: item,
 			element: elements[name]
@@ -63,6 +65,7 @@ function changeSetDetail(setName) {
 		renameSet.display = applySet.display = deleteSet.display = null;
 	} else {
 		data = currentSet;
+		// @ts-ignore
 		(element = currentSetElement).scrollIntoViewIfNeeded();
 		setName = "当前使用方案";
 		showingSetName = "";
@@ -90,7 +93,30 @@ function updateSetDetail({ variables, indexors }) {
 		indexorsList.classList.add("empty");
 	}
 }
-const { listFrame, list, detail, renameSet: { style: renameSet }, saveSet: { style: saveSet }, applySet: { style: applySet }, deleteSet: { style: deleteSet }, currentSetElement, currentSetIndexors, currentSetVariables, setNameTitle, variablesNumber, indexorsNumber, variablesList, indexorsList } = parseAndGetNodes([
+/**
+ * @type {{
+ * listFrame: HTMLDivElement,
+ * list: HTMLDivElement,
+ * detail: HTMLDivElement,
+ * renameSet: HTMLButtonElement,
+ * saveSet: HTMLButtonElement,
+ * applySet: HTMLButtonElement,
+ * deleteSet: HTMLButtonElement,
+ * currentSetElement: HTMLButtonElement,
+ * currentSetIndexors: Text,
+ * currentSetVariables: Text,
+ * setNameTitle: HTMLSpanElement,
+ * variablesNumber: HTMLSpanElement,
+ * indexorsNumber: HTMLSpanElement,
+ * variablesList: HTMLDivElement,
+ * indexorsList: HTMLDivElement
+ * }}
+ */
+//@ts-ignore
+const {
+	listFrame, list, detail, renameSet: { style: renameSet }, saveSet: { style: saveSet }, applySet: { style: applySet }, deleteSet: { style: deleteSet },
+	currentSetElement, currentSetIndexors, currentSetVariables, setNameTitle, variablesNumber, indexorsNumber, variablesList, indexorsList
+} = parseAndGetNodes([
 	["div", [
 		["button", [
 			["span", "当前使用方案", { class: "indexor-management-set-name" }],
