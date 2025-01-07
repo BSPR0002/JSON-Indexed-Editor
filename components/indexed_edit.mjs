@@ -2,7 +2,7 @@ import { Indexor } from "../indexor.mjs";
 import { parse as parseAH, parseAndGetNodes, EVENT_LISTENERS } from "/javascript/module/ArrayHTML.mjs";
 import { createTab } from "../ui.mjs";
 import MiniWindow from "/javascript/module/MiniWindow.mjs";
-import { currentSet, modifyCurrentSet } from "./indexor_management.mjs";
+import { currentSet, modifyCurrentSet, show as showIndexorManager } from "./indexor_management.mjs";
 import showMenu from "/javascript/module/ContextMenu.mjs";
 const { stringify, parse } = JSON,
 	/** @ts-ignore @type {{indexorFrame: HTMLDivElement, index: HTMLInputElement}} */
@@ -208,11 +208,24 @@ loadSet();
 function holdMenu(element, list) {
 	const classList = element.classList;
 	classList.add("hold");
-	showMenu(list, { element }, { darkStyle: true, onClose: onMenuClose.bind(null, classList) });
+	showMenu(list, { element }, { darkStyle: true, onClose: onMenuClose.bind(null, classList), pureList: true });
 }
 function onMenuClose(classList) { classList.remove("hold") }
 
-const indexorMenu = [],
+/** @type {Parameters<showMenu>[0]} */
+const indexorMenu = [{
+	type: "item",
+	text: "添加索引器",
+	onSelect: newIndexor
+}, {
+	type: "item",
+	text: "移除全部索引器",
+	onSelect: removeAllIndexor
+}, {
+	type: "item",
+	text: "索引器方案管理",
+	onSelect: showIndexorManager
+}],
 	variableMenu = [];
 
 createTab("indexed-edit", "索引式编辑", [
@@ -220,7 +233,7 @@ createTab("indexed-edit", "索引式编辑", [
 		"索引变量",
 		["button", null, {
 			class: "indexed-edit-options", title: "索引变量选项",
-			[EVENT_LISTENERS]: [["click", function () { holdMenu(this, indexorMenu) }]]
+			[EVENT_LISTENERS]: [["click", function () { holdMenu(this, variableMenu) }]]
 		}],
 		index
 	], { id: "indexed-edit-variables" }],
@@ -228,7 +241,7 @@ createTab("indexed-edit", "索引式编辑", [
 		"索引器",
 		["button", null, {
 			class: "indexed-edit-options", title: "索引器选项",
-			[EVENT_LISTENERS]: [["click", function () { holdMenu(this, variableMenu) }]]
+			[EVENT_LISTENERS]: [["click", function () { holdMenu(this, indexorMenu) }]]
 		}]
 	], { id: "indexed-edit-indexor" }],
 	indexorFrame
