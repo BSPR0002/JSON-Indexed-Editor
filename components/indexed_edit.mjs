@@ -125,6 +125,7 @@ function newIndexor() {
 	indexor.update();
 	indexors.push(indexor);
 	indexorFrame.appendChild(indexor.element);
+
 }
 async function removeIndexor(instance) {
 	const i = indexors.indexOf(instance);

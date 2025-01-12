@@ -1,25 +1,31 @@
 import CacheController from "../support.mjs"
-const cacheController = new CacheController(2);
+const cacheController = new CacheController(2); // version
 self.addEventListener("install", event => {
     event.waitUntil(cacheController.install({
         own: [
-            "index.html",
-            "manifest.webmanifest",
-            "main.mjs",
-            "editor.mjs",
-            "data.mjs",
-            "ui.mjs",
-            "editor.css",
+            // [".git",".gitattributes","info.json","service_worker.mjs"]
             "buttons.svg",
-            "icon.svg",
+            "components/indexed_edit.mjs",
+            "components/indexor_management.mjs",
+            "css/indexed_edit.css",
+            "css/main.css",
+            "data.mjs",
+            "icon_monochrome.svg",
             "icon.png",
-            "icon-monochrome.svg"
+            "icon.svg",
+            "index.html",
+            "indexor.mjs",
+            "main.mjs",
+            "manifest.webmanifest",
+            "menu.mjs",
+            "tree.mjs",
+            "ui.mjs"
         ],
         requiredScripts: [
             "ArrayHTML.mjs",
             "MiniWindow.mjs",
             "IndexedDatabase.mjs",
-            "PromiseAdapter.mjs",
+            "PromiseWithResolvers.mjs",
             "FileIO.mjs",
             "BinaryOperate.mjs"
         ],
