@@ -2,7 +2,7 @@ import { Indexor } from "../indexor.mjs";
 import { parse as parseAH, parseAndGetNodes, EVENT_LISTENERS } from "/javascript/module/ArrayHTML.mjs";
 import { createTab } from "../ui.mjs";
 import MiniWindow from "/javascript/module/MiniWindow.mjs";
-import { currentSet, modifyCurrentSet, show as showIndexorManager } from "./indexor_management.mjs";
+import { currentSetChangeNotifier, getCurrentSet, modifyCurrentSet, show as showIndexorManager } from "./indexor_management.mjs";
 import showMenu from "/javascript/module/ContextMenu.mjs";
 const { stringify, parse } = JSON,
 	/** @ts-ignore @type {{indexorFrame: HTMLDivElement, index: HTMLInputElement}} */
@@ -22,7 +22,10 @@ class IndexorItem {
 		if (typeof value != "string") throw new TypeError("Invalid type");
 		this.#nameElement.value = this.#name = value;
 	}
-	#userChangedName() { this.#name = this.#nameElement.value }
+	#userChangedName() {
+		this.#name = this.#nameElement.value;
+		updateCurrentSet();
+	}
 	/** @type {HTMLInputElement} */
 	#pathElement;
 	get path() { return this.#indexor.path }
@@ -35,6 +38,7 @@ class IndexorItem {
 	#userChangedPath() {
 		this.#indexor.path = this.#pathElement.value
 		this.#updateNode();
+		updateCurrentSet();
 	}
 	#updateNode() {
 		const path = this.#pathElement,
@@ -125,14 +129,14 @@ function newIndexor() {
 	indexor.update();
 	indexors.push(indexor);
 	indexorFrame.appendChild(indexor.element);
-
+	updateCurrentSet();
 }
 async function removeIndexor(instance) {
 	const i = indexors.indexOf(instance);
 	if (i != -1 && await MiniWindow.confirm("确定要移除这个索引器吗？")) {
 		indexors.splice(i, 1);
 		instance.element.remove();
-		modifyCurrentSet({ indexors, variables });
+		updateCurrentSet();
 	}
 }
 async function removeAllIndexor() {
@@ -141,6 +145,7 @@ async function removeAllIndexor() {
 			indexorFrame.innerHTML = "";
 			indexors = [];
 		}
+		updateCurrentSet();
 	}
 }
 function updateAllIndexor() { for (const item of indexors) item.update() }
@@ -177,7 +182,8 @@ async function userLoadSet() {
 }
 
 function loadSet() {
-	const { indexors: indexorSet, variables: variableSet } = currentSet;
+	if (selfSetUpdate) return;
+	const { indexors: indexorSet, variables: variableSet } = getCurrentSet();
 	indexorFrame.innerHTML = "";
 	indexors = [];
 	for (const index in variableSet) {
@@ -198,11 +204,16 @@ function loadSet() {
 	}
 	updateAllIndexor();
 }
+var selfSetUpdate = false;
+function updateCurrentSet() {
+	selfSetUpdate = true;
+	modifyCurrentSet({ indexors, variables });
+	selfSetUpdate = false;
+}
 
 
 
-
-
+currentSetChangeNotifier.addHandler(loadSet);
 loadSet();
 
 function holdMenu(element, list) {
@@ -247,4 +258,4 @@ createTab("indexed-edit", "索引式编辑", [
 	indexorFrame
 ], false);
 
-export { updateAllIndexor, loadSet };
+export { updateAllIndexor };

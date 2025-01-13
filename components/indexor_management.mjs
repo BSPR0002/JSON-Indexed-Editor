@@ -1,8 +1,8 @@
 import { config, indexorStorage } from "../data.mjs";
 import { parse, parseAndGetNodes, EVENT_LISTENERS } from "/javascript/module/ArrayHTML.mjs";
 import { changeTab, createTab, getTab } from "../ui.mjs";
-import { loadSet } from "./indexed_edit.mjs";
 import MiniWindow from "/javascript/module/MiniWindow.mjs";
+import Notifier from "/javascript/module/Notifier.mjs";
 function buildSet(item) {
 	const name = item.name;
 	return ["button", [
@@ -39,6 +39,7 @@ async function modifyCurrentSet(data) {
 	for (const item of variables) if (typeof item == "string") temp2.push(item);
 	await config.update(currentSet = { indexors: temp1, variables: temp2 }, "currentSet");
 	updateCurrentSet();
+	currentSetChangeNotifier.trigger();
 }
 async function updateSetsList() {
 	list.innerHTML = "";
@@ -154,7 +155,7 @@ const {
 							if (!await MiniWindow.confirm("确定要使用这一方案吗？未保存的当前使用方案将会丢失！")) return;
 							modifyCurrentSet(sets[showingSetName].data);
 							changeSetDetail("");
-							loadSet();
+							currentSetChangeNotifier.trigger()
 						}, { passive: true }]
 					]
 				}, "applySet"],
@@ -202,10 +203,12 @@ const {
 			], { class: "indexor-management-detail-part" }]
 		], { id: "indexor-management-detail-content" }]
 	], { id: "indexor-management-detail" }, "detail"]
-]).nodes;
+]).nodes,
+	currentSetChangeNotifier = new Notifier;
 var currentSet, showingSetElement = currentSetElement, showingSetName = "", sets;
+function getCurrentSet() { return structuredClone(currentSet) }
 modifyCurrentSet(await config.get("currentSet") ?? { indexors: [], variables: [] });
 await updateSetsList();
 function show() { changeTab(getTab("indexor-management") || createTab("indexor-management", "索引器方案", [listFrame, detail])) }
 export default show;
-export { show, currentSet, modifyCurrentSet };
+export { show, getCurrentSet, modifyCurrentSet, currentSetChangeNotifier };
