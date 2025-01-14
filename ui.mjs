@@ -100,24 +100,24 @@ tabsOverlayTrack.addEventListener("pointerdown", ({ target, offsetX }) => {
 	window.addEventListener("pointermove", dragScroll, { passive: true });
 	window.addEventListener("pointerup", dragScrollEnd, { passive: true });
 	window.addEventListener("blur", dragScrollEnd, { passive: true });
+	// @ts-ignore
 	tabsOverlayTrackStyle.opacity = 0.5;
 }, { passive: true });
-function userChangeTab() {
-	const tabItem = this[relation];
-	currentTab.tab.classList.remove("current");
-	currentTab = tabItem;
-	tabItem.tab.classList.add("current");
-	pageFrame.innerHTML = "";
-	pageFrame.appendChild(tabItem.page);
+function noticeChangeTab(currentTab, lastTab) {
+	currentTab.dispatchEvent(new Event("show"));
+	lastTab?.dispatchEvent(new Event("hide"));
 }
+function userChangeTab() { changeTab(this[relation]) }
 function changeTab(tab) {
-	currentTab?.tab.classList.remove("current");
+	const lastTab = currentTab;
+	lastTab?.tab.classList.remove("current");
 	currentTab = tab;
 	const tabElement = tab.tab;
 	tabElement.classList.add("current");
 	pageFrame.innerHTML = "";
 	pageFrame.appendChild(tab.page);
 	tabElement.scrollIntoViewIfNeeded();
+	queueMicrotask(noticeChangeTab.bind(null, tab, lastTab));
 }
 function userCloseTab(event) {
 	event.stopImmediatePropagation();
@@ -133,6 +133,7 @@ class TabItem extends EventTarget {
 			const exist = getTab(id);
 			if (exist) return exist;
 		}
+		/** @ts-ignore @type {{ tab: HTMLButtonElement, page: HTMLDivElement }} */
 		const { tab, page } = parseAndGetNodes([
 			["button", [
 				["span", title],

@@ -1,17 +1,26 @@
 import { Indexor } from "../indexor.mjs";
-import { parse as parseAH, parseAndGetNodes, EVENT_LISTENERS } from "/javascript/module/ArrayHTML.mjs";
+import { parseAndGetNodes, EVENT_LISTENERS } from "/javascript/module/ArrayHTML.mjs";
 import { createTab } from "../ui.mjs";
 import MiniWindow from "/javascript/module/MiniWindow.mjs";
 import { currentSetChangeNotifier, getCurrentSet, modifyCurrentSet, show as showIndexorManager } from "./indexor_management.mjs";
 import showMenu from "/javascript/module/ContextMenu.mjs";
 const { stringify, parse } = JSON,
 	/** @ts-ignore @type {{indexorFrame: HTMLDivElement, index: HTMLInputElement}} */
-	{ indexorFrame, index } = parseAndGetNodes([
-		["input", null, { id: "indexed-edit-index-set", type: "number", value: 0, min: 0, step: 1, max: 4294967295, title: "索引编号" }, "index"],
+	{ indexorFrame, variableFrame } = parseAndGetNodes([
+		["div", null, { id: "indexed-edit-variable-frame" }, "variableFrame"],
 		["div", null, { id: "indexed-edit-indexor-frame" }, "indexorFrame"]
-	]).nodes;
+	]).nodes,
+	identifierRegexp = /^[A-Za-z_$][\w$]*$/;
+
 //索引器部分
-var indexors, variables = [];
+/**@type {IndexorItem[]}*/
+var indexors,
+	/**@type {VaribaleItem[]}*/
+	variables = [],
+	/**@type {Map<string, VaribaleItem>}*/
+	variablesMapping = new Map,
+	/** @type {VaribaleItem} */
+	currentActiveVariable = null;
 class IndexorItem {
 	#indexor = new Indexor;
 	#name = "";
@@ -98,6 +107,7 @@ class IndexorItem {
 	#element;
 	get element() { return this.#element }
 	constructor(name = "", path = "") {
+		/** @ts-ignore @type {{name: HTMLInputElement, path: HTMLInputElement, content: HTMLInputElement, element: HTMLDivElement}} */
 		const nodes = parseAndGetNodes([["div", [
 			["input", null, { class: "indexor-name", spellcheck: "false", placeholder: "索引器名称", value: name, [EVENT_LISTENERS]: [["input", this.#userChangedName.bind(this)]] }, "name"],
 			["button", null, { class: "indexor-remove", title: "移除索引器", [EVENT_LISTENERS]: [["click", removeIndexor.bind(null, this)]] }],
@@ -105,13 +115,9 @@ class IndexorItem {
 			["input", null, { class: "indexor-path", spellcheck: "false", placeholder: "索引路径", value: path, [EVENT_LISTENERS]: [["input", this.#userChangedPath.bind(this)]] }, "path"],
 			["input", null, { class: "indexor-content", spellcheck: "false", placeholder: "请输入内容", [EVENT_LISTENERS]: [["input", this.#userChangedContent.bind(this)]] }, "content"]
 		], { class: "indexor" }, "element"]]).nodes;
-		// @ts-ignore
 		this.#element = nodes.element;
-		// @ts-ignore
 		this.#nameElement = nodes.name;
-		// @ts-ignore
 		this.#pathElement = nodes.path;
-		// @ts-ignore
 		this.#contentElement = nodes.content;
 		this.#name = name;
 		this.#indexor.path = path;
@@ -140,11 +146,9 @@ async function removeIndexor(instance) {
 	}
 }
 async function removeAllIndexor() {
-	if (indexors.length) {
-		if (await MiniWindow.confirm("确定要移除全部索引器吗？")) {
-			indexorFrame.innerHTML = "";
-			indexors = [];
-		}
+	if (indexors.length && await MiniWindow.confirm("确定要移除全部索引器吗？")) {
+		indexorFrame.innerHTML = "";
+		indexors = [];
 		updateCurrentSet();
 	}
 }
@@ -162,24 +166,90 @@ function setContent(node, content) {
 	return false;
 }
 
-
-
-
-
-const identifierRegexp = /^[A-Za-z_$][\w$]*$/;
-
-function indexorDataMapper(item) { return ["div", [["span", ["名称：", item.name]], ["br"], ["span", ["路径：", item.path]]]] }
-function buildIndexorData(message, data) {
-	return parseAH([["div", [
-		["span", message],
-		["div", data.length ? data.map(indexorDataMapper) : "空", { class: "indexor-data" }]
-	], { class: "indexor-data-frame" }]])
+class VaribaleItem {
+	/** @type {string} */
+	name;
+	#value;
+	get value() { return this.#value }
+	set value(value) {
+		if (typeof value != "number") throw new TypeError("Invalid type");
+		// @ts-ignore
+		this.#valueElement.value = this.#value = value;
+		updateAllIndexor();
+	}
+	#userChangeValue() {
+		this.#value = Number(this.#valueElement.value);
+		updateAllIndexor();
+	}
+	#element;
+	get element() { return this.#element }
+	#valueElement;
+	/** @param {string} name */
+	constructor(name, initialValue = 0) {
+		Object.defineProperty(this, "name", { value: name, enumerable: true });
+		this.#value = initialValue;
+		/** @ts-ignore @type {{value: HTMLInputElement, element: HTMLDivElement}} */
+		const nodes = parseAndGetNodes([["div", [
+			["span", name, { class: "variable-name" }],
+			["input", null, { class: "variable-value", type: "number", value: initialValue, [EVENT_LISTENERS]: [["change", this.#userChangeValue.bind(this)]] }, "value"],
+			["button", null, { class: "variable-remove", [EVENT_LISTENERS]: [["click", this.#userChangeValue.bind(this)]] }]
+		], { class: "variable" }, "element"]]).nodes;
+		this.#element = nodes.element;
+		this.#valueElement = nodes.value;
+	}
+	static {
+		Object.defineProperty(this.prototype, Symbol.toStringTag, {
+			value: this.name,
+			configurable: true
+		})
+	}
+}
+async function newVariable() {
+	const name = await MiniWindow.prompt("请输入变量名称");
+	if (!identifierRegexp.test(name)) {
+		MiniWindow.alert("名称不符合规则！名称只能包含字母、数字、下划线、横杠，且不能以数字开头。");
+		return;
+	}
+	if (variablesMapping.has(name)) {
+		MiniWindow.alert("已存在具有该名称的变量。");
+		return;
+	}
+	const variable = new VaribaleItem(name);
+	variables.push(variable);
+	variablesMapping.set(name, variable);
+	variableFrame.appendChild(variable.element);
+	updateAllIndexor();
+	updateCurrentSet();
+}
+/** @param {VaribaleItem} instance */
+async function removeVariable(instance) {
+	const i = variables.indexOf(instance), name = instance.name;
+	if (i != -1 && await MiniWindow.confirm(`确定要移除变量 ${name} 吗？`)) {
+		if (currentActiveVariable == instance) currentActiveVariable = null;
+		variablesMapping.delete(name)
+		variables.splice(i, 1);
+		instance.element.remove();
+		updateAllIndexor();
+		updateCurrentSet();
+	}
+}
+async function removeAllVariable() {
+	if (variables.length && await MiniWindow.confirm("确定要移除全部变量吗？")) {
+		variableFrame.innerHTML = "";
+		currentActiveVariable = null;
+		variablesMapping = new Map();
+		variables = [];
+		updateAllIndexor();
+		updateCurrentSet();
+	}
+}
+/** @param {VaribaleItem} variable */
+function activeVariable(variable) {
+	variable.element.className = "variable current";
+	if (currentActiveVariable) currentActiveVariable.element.className = "variable";
+	currentActiveVariable = variable;
 }
 
-
-async function userLoadSet() {
-	//TODO
-}
 
 function loadSet() {
 	if (selfSetUpdate) return;
@@ -236,17 +306,24 @@ const indexorMenu = [{
 	type: "item",
 	text: "索引器方案管理",
 	onSelect: showIndexorManager
-}],
-	variableMenu = [];
+}], variableMenu = [{
+	type: "item",
+	text: "添加变量",
+	onSelect: newVariable
+}, {
+	type: "item",
+	text: "移除全部变量",
+	onSelect: removeAllVariable
+}];
 
-createTab("indexed-edit", "索引式编辑", [
+const tab = createTab("indexed-edit", "索引式编辑", [
 	["div", [
 		"索引变量",
 		["button", null, {
 			class: "indexed-edit-options", title: "索引变量选项",
 			[EVENT_LISTENERS]: [["click", function () { holdMenu(this, variableMenu) }]]
 		}],
-		index
+		variableFrame
 	], { id: "indexed-edit-variables" }],
 	["div", [
 		"索引器",
@@ -257,5 +334,7 @@ createTab("indexed-edit", "索引式编辑", [
 	], { id: "indexed-edit-indexor" }],
 	indexorFrame
 ], false);
+tab.addEventListener("show", function () { console.log("show") });
+tab.addEventListener("hide", function () { console.log("hide") });
 
 export { updateAllIndexor };

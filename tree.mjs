@@ -269,6 +269,7 @@ function buildNative(key, keyTitle, type, value, parent, top) {
 	return new TreeNode(key, type, parent, node, content, top);
 }
 function buildObject(keyTitle, isArray, value, parent, top) {
+	/** @ts-ignore @type {{ node: HTMLDetailsElement, content: HTMLDivElement }} */ 
 	const { node, content } = parseAndGetNodes([
 		["details", [
 			["summary", [

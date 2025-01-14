@@ -16,7 +16,7 @@ class Expression extends String {
 	}
 }
 class Indexor {
-	#route = [];
+	#route = Object.freeze([]);
 	get route() { return this.#route }
 	#path = "";
 	get path() { return this.#path }
