@@ -49,8 +49,9 @@ class Indexor {
 		var target = tree;
 		for (let key of route) if (target instanceof TreeCollectionNode) {
 			if (key instanceof Expression) {
-				if (variables && key in variables) { target = target.get(variables[key]) } else return;
-			} else target = target.get(key)
+				const variable = variables?.get(key.toString());
+				if (variable) { target = target.get(variable.value) } else return;
+			} else target = target.get(key);
 		} else return null;
 		return target;
 	}

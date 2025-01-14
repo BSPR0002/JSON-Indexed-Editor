@@ -56,7 +56,7 @@ class IndexorItem {
 		content.className = "indexor-content";
 		var node;
 		try {
-			node = this.#node = this.#indexor.getNode(variables);
+			node = this.#node = this.#indexor.getNode(variablesMapping);
 		} catch (e) {
 			this.#node = null;
 			content.disabled = true;
@@ -254,10 +254,26 @@ function activeVariable(variable) {
 function loadSet() {
 	if (selfSetUpdate) return;
 	const { indexors: indexorSet, variables: variableSet } = getCurrentSet();
-	indexorFrame.innerHTML = "";
+	variableFrame.innerHTML = indexorFrame.innerHTML = "";
 	indexors = [];
-	for (const index in variableSet) {
-		//TODO
+	variables = [];
+	variablesMapping = new Map();
+	var updated = false;
+	if (variableSet.length) {
+		const fragment = new DocumentFragment;
+		for (const { name, value } of variableSet) {
+			const item = new VaribaleItem(name, value);
+			variables.push(item);
+			variablesMapping.set(item.name, item);
+			fragment.appendChild(item.element);
+		}
+		variableFrame.appendChild(fragment);
+	} else {
+		const item = new VaribaleItem("i");
+		variables.push(item);
+		variablesMapping.set(item.name, item);
+		variableFrame.appendChild(item.element);
+		updated = true;
 	}
 	if (indexorSet.length) {
 		const fragment = new DocumentFragment;
@@ -271,13 +287,15 @@ function loadSet() {
 		const item = new IndexorItem;
 		indexors.push(item);
 		indexorFrame.appendChild(item.element);
+		updated = true;
 	}
 	updateAllIndexor();
+	if (updated) updateCurrentSet();
 }
 var selfSetUpdate = false;
 function updateCurrentSet() {
 	selfSetUpdate = true;
-	modifyCurrentSet({ indexors, variables });
+	try { modifyCurrentSet({ indexors, variables }) } catch (e) { console.error(e) }
 	selfSetUpdate = false;
 }
 

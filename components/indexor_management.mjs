@@ -10,7 +10,7 @@ function buildSet(item) {
 		["span", `${item.indexors.length}个索引器，${item.variables.length}个变量`, { class: "indexor-management-set-detail" }]
 	], { class: "indexor-management-set", "data-id": name, [EVENT_LISTENERS]: [["click", userChangeSetDetail, { passive: true }]] }, name]
 }
-function buildVariable(item) { return ["span", item, { title: item }] }
+function buildVariable(item) { return ["div", `${item.name} = ${item.value}`] }
 function buildIndexor(item) {
 	return ["div", [
 		['span', "名称："], ['span', item.name],
@@ -22,7 +22,7 @@ function updateCurrentSet() {
 	currentSetVariables.textContent = currentSet.variables.length;
 	if (!showingSetName) updateSetDetail(currentSet);
 }
-async function modifyCurrentSet(data) {
+function modifyCurrentSet(data) {
 	if (!(data instanceof Object)) throw new TypeError("Invalid data.");
 	const { indexors, variables } = data;
 	if (!Array.isArray(indexors)) throw new TypeError("Invalid data.");
@@ -36,8 +36,14 @@ async function modifyCurrentSet(data) {
 			path: typeof path == "string" ? path : ""
 		});
 	}
-	for (const item of variables) if (typeof item == "string") temp2.push(item);
-	await config.update(currentSet = { indexors: temp1, variables: temp2 }, "currentSet");
+	for (const item of variables) {
+		if (!(item instanceof Object)) throw new TypeError("Invalid data.");
+		const { name, value } = item;
+		if (typeof name != "string" || !name || typeof value != "number") throw new TypeError("Invalid data.");
+		temp2.push({ name, value });
+	}
+	currentSet = { indexors: temp1, variables: temp2 };
+	config.update(currentSet, "currentSet");
 	updateCurrentSet();
 	currentSetChangeNotifier.trigger();
 }
