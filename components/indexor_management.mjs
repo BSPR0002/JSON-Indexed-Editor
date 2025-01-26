@@ -145,7 +145,7 @@ const {
 						["click", async () => {
 							const name = await MiniWindow.prompt("请输入方案名称：", "方案" + Date.now());
 							if (!name) {
-								new MiniWindow("方案名称不能为空！");
+								MiniWindow.alert("方案名称不能为空！");
 								return;
 							}
 							if (Object.hasOwn(sets, name) && !await MiniWindow.confirm("已经存在此名称的方案，你想要覆盖吗？")) return;
@@ -179,12 +179,12 @@ const {
 						["click", async () => {
 							const name = await MiniWindow.prompt("请输入方案名称：", showingSetName);
 							if (!name) {
-								new MiniWindow("方案名称不能为空！");
+								MiniWindow.alert("方案名称不能为空！");
 								return;
 							}
 							if (showingSetName == name) return;
 							if (Object.hasOwn(sets, name)) {
-								new MiniWindow("已经存在此名称的方案，重命名失败！");
+								MiniWindow.alert("已经存在此名称的方案，重命名失败！");
 								return
 							};
 							const set = sets[showingSetName].data;

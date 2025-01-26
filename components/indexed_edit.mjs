@@ -190,9 +190,9 @@ class VaribaleItem {
 		this.#value = initialValue;
 		/** @ts-ignore @type {{value: HTMLInputElement, element: HTMLDivElement}} */
 		const nodes = parseAndGetNodes([["div", [
+			["button", null, { class: "variable-remove", [EVENT_LISTENERS]: [["click", removeVariable.bind(null, this)]] }],
 			["span", name, { class: "variable-name" }],
-			["input", null, { class: "variable-value", type: "number", value: initialValue, [EVENT_LISTENERS]: [["change", this.#userChangeValue.bind(this)]] }, "value"],
-			["button", null, { class: "variable-remove", [EVENT_LISTENERS]: [["click", this.#userChangeValue.bind(this)]] }]
+			["input", null, { class: "variable-value", type: "number", value: initialValue, [EVENT_LISTENERS]: [["change", this.#userChangeValue.bind(this)]] }, "value"]
 		], { class: "variable" }, "element"]]).nodes;
 		this.#element = nodes.element;
 		this.#valueElement = nodes.value;
