@@ -1,6 +1,6 @@
 #editor-page-indexed-edit {
 	display: grid;
-	grid-template-rows: 2rem 2rem 1fr;
+	grid-template-rows: minmax(2rem, auto) 2rem 1fr;
 	overflow: hidden;
 }
 #editor-page-indexed-edit > div {
@@ -14,10 +14,14 @@
 	grid-template-columns: auto 2rem;
 	justify-content: start;
 	align-items: center;
-	gap: 0.5rem;
+	column-gap: 0.5rem;
 	text-wrap: nowrap;
 }
-#indexed-edit-variables { grid-template-columns: auto 2rem 1fr }
+#indexed-edit-variables {
+	grid-template-columns: auto 2rem 1fr;
+	grid-template-rows: 2rem 1fr;
+	grid-template-areas: "title menu list"". . list";
+}
 
 .indexed-edit-options {
 	width: 1.5rem;
@@ -123,4 +127,70 @@
 	overflow: hidden auto;
 	font-size: 0.875rem;
 	word-break: break-all;
+}
+
+#indexed-edit-variable-frame {
+	display: flex;
+	grid-area: list;
+	flex-wrap: wrap;
+	padding-block: 0.25rem;
+	gap: 0.5rem;
+	max-height: 6rem;
+	overflow: hidden auto;
+}
+
+.variable {
+	display: grid;
+	grid-template-columns: auto 4rem 1rem;
+	height: 1.5rem;
+	padding: 0.125rem 0.25rem;
+	gap: 0.25rem;
+	align-items: center;
+	overflow: hidden;
+	background-color: #111;
+	border-radius: 0.25rem;
+}
+
+.variable-name {
+	color: #00BFFF;
+}
+
+.variable-value {
+	border: 0;
+	height: 1.25rem;
+	border-radius: 0.125rem;
+	background-color: #444;
+	color: #FFF;
+	padding: 0 0.25rem;
+}
+
+.variable-remove {
+	width: 1rem;
+	height: 1rem;
+	background-color: transparent;
+	background-image: url(../buttons.svg);
+	border-radius: 0.125rem;
+	opacity: 0;
+	transition: opacity 0.2s linear;
+}
+
+.variable:hover>.variable-remove{
+	opacity: 1;
+}
+
+.variable-remove:hover {
+	background-color: #333;
+}
+.variable-remove:active {
+	background-color: red;
+}
+
+.variable.active {
+	background-color: var(--focusColor);
+}
+.variable.active>.variable-name {
+	color: #000;
+}
+.variable.active>.variable-value {
+	background-color: #000;
 }
