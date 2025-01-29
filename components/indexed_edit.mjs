@@ -180,10 +180,14 @@ class VaribaleItem {
 	#userChangeValue() {
 		this.#value = Number(this.#valueElement.value);
 		updateAllIndexor();
+		updateCurrentSet();
 	}
 	#element;
 	get element() { return this.#element }
 	#valueElement;
+	#active = false;
+	get active() { return this.#active }
+	set active(value) { this.#element.classList[(this.#active = Boolean(value)) ? "add" : "remove"]("active") }
 	/** @param {string} name */
 	constructor(name, initialValue = 0) {
 		Object.defineProperty(this, "name", { value: name, enumerable: true });
@@ -243,13 +247,50 @@ async function removeAllVariable() {
 		updateCurrentSet();
 	}
 }
-/** @param {VaribaleItem} variable */
-function activeVariable(variable) {
-	variable.element.className = "variable current";
-	if (currentActiveVariable) currentActiveVariable.element.className = "variable";
-	currentActiveVariable = variable;
+function variableActiveShortCut(nextOrPrevious) {
+	const max = variables.length - 1;
+	if (max < 0) return;
+	if (currentActiveVariable) {
+		if (max < 1) return;
+		var index = variables.indexOf(currentActiveVariable);
+		index = nextOrPrevious ?
+			(index < max ? index + 1 : 0) :
+			(index ? index - 1 : max);
+		currentActiveVariable.active = false;
+		(currentActiveVariable = variables[index]).active = true;
+	} else {
+		(currentActiveVariable = variables[nextOrPrevious ? 0 : max]).active = true;
+	}
 }
-
+function variableBumpShortCut(upOrDown) {
+	if (!currentActiveVariable) return;
+	if (upOrDown) { ++currentActiveVariable.value }
+	else --currentActiveVariable.value;
+	updateCurrentSet();
+}
+/**
+ * @param {KeyboardEvent} event
+ */
+function variableKeyEvent(event) {
+	if (!event.ctrlKey || event.shiftKey || event.altKey) return;
+	switch (event.key) {
+		case "ArrowRight":
+			variableActiveShortCut(true);
+			break;
+		case "ArrowLeft":
+			variableActiveShortCut(false);
+			break;
+		case "ArrowUp":
+			variableBumpShortCut(true);
+			break;
+		case "ArrowDown":
+			variableBumpShortCut(false);
+			break;
+	}
+	event.preventDefault();
+}
+function enableVariableKey() { document.addEventListener("keydown", variableKeyEvent) }
+function disableVariableKey() { document.removeEventListener("keydown", variableKeyEvent) }
 
 function loadSet() {
 	if (selfSetUpdate) return;
@@ -298,9 +339,6 @@ function updateCurrentSet() {
 	try { modifyCurrentSet({ indexors, variables }) } catch (e) { console.error(e) }
 	selfSetUpdate = false;
 }
-
-
-
 currentSetChangeNotifier.addHandler(loadSet);
 loadSet();
 
@@ -310,7 +348,6 @@ function holdMenu(element, list) {
 	showMenu(list, { element }, { darkStyle: true, onClose: onMenuClose.bind(null, classList), pureList: true });
 }
 function onMenuClose(classList) { classList.remove("hold") }
-
 /** @type {Parameters<showMenu>[0]} */
 const indexorMenu = [{
 	type: "item",
@@ -352,7 +389,7 @@ const tab = createTab("indexed-edit", "索引式编辑", [
 	], { id: "indexed-edit-indexor" }],
 	indexorFrame
 ], false);
-tab.addEventListener("show", function () { console.log("show") });
-tab.addEventListener("hide", function () { console.log("hide") });
+tab.addEventListener("show", enableVariableKey);
+tab.addEventListener("hide", disableVariableKey);
 
 export { updateAllIndexor };

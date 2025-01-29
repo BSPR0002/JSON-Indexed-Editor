@@ -43,6 +43,11 @@ class Indexor {
 		}
 		this.#route = Object.freeze(route);
 	}
+	/**
+	 * Find node from JSON data.
+	 * @param {Map<string, {value: number}>} variables
+	 * @returns
+	 */
 	getNode(variables) {
 		const route = this.#route;
 		if (!route) throw new Error("Invalid path.");
