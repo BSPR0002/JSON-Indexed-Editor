@@ -1,9 +1,11 @@
-import { read, readableTypes } from "/javascript/module/FileIO.mjs";
+import { read, readableTypes, open } from "/javascript/module/FileIO.mjs";
 import { MiniWindow } from "/javascript/module/MiniWindow.mjs";
 import { getTab } from "./ui.mjs";
-import { openFile } from "./tree.mjs";
+import { closeFile, load, saveAs, saveFile } from "./tree.mjs";
 import { show as showWelcome } from "./components/welcome.mjs";
 import { show as showEdit } from "./components/indexed_edit.mjs";
+import { show as showIndexorManager } from "./components/indexor_management.mjs";
+import { renderMenu, menus } from "./menu.mjs";
 var working = false, pending = false;
 async function loadFile(fileHandle) {
 	if (pending || working) return;
@@ -31,9 +33,13 @@ function startWork(data, fileHandle) {
 		return;
 	}
 	working = true;
-	openFile(data, fileHandle);
+	load(data, fileHandle);
 	getTab("welcome").close();
 	showEdit();
+}
+async function openFile() {
+	if (working || pending) return;
+	try { loadFile(await open({ types: [{ accept: { "application/json": [".json"] } }] })) } catch (e) { }
 }
 function endWork() {
 	working = false;
@@ -46,6 +52,42 @@ document.addEventListener("dragover", event => {
 	event.dataTransfer.dropEffect = "none";
 });
 document.addEventListener("drop", preventDefault);
+menus.push({
+	text: "文件",
+	list: [{
+		type: "item",
+		text: "打开文件",
+		get disabled() { return working },
+		onSelect: openFile
+	}, {
+		type: "item",
+		text: "保存文件",
+		get disabled() { return !working },
+		keys: {
+			ctrl: true,
+			key: "S"
+		},
+		onSelect: saveFile
+	}, {
+		type: "item",
+		text: "另存为",
+		get disabled() { return !working },
+		onSelect: saveAs
+	}, {
+		type: "item",
+		text: "关闭文件",
+		get disabled() { return !working },
+		onSelect: closeFile
+	}]
+}, {
+	text: "查看",
+	list: [{
+		type: "item",
+		text: "索引器方案管理",
+		onSelect: showIndexorManager
+	}]
+});
+renderMenu();
 showWelcome();
 // @ts-ignore
 launchQueue.setConsumer(function (launchParams) {
@@ -53,4 +95,4 @@ launchQueue.setConsumer(function (launchParams) {
 	if (file) loadFile(file);
 });
 document.getElementById("loading-mask").remove();
-export { endWork, loadFile }
+export { endWork, openFile }

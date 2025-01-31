@@ -2,7 +2,7 @@ import { Indexor } from "../indexor.mjs";
 import { parseAndGetNodes, EVENT_LISTENERS, parse as parseAH } from "/javascript/module/ArrayHTML.mjs";
 import { createTab } from "../ui.mjs";
 import MiniWindow from "/javascript/module/MiniWindow.mjs";
-import { currentSetChangeNotifier, getCurrentSet, modifyCurrentSet, show as showIndexorManager } from "./indexor_management.mjs";
+import { currentSetChangeNotifier, getCurrentSet, modifyCurrentSet } from "./indexor_management.mjs";
 import showMenu from "/javascript/module/ContextMenu.mjs";
 const { stringify, parse } = JSON,
 	/** @ts-ignore @type {{indexorFrame: HTMLDivElement, index: HTMLInputElement}} */
@@ -357,10 +357,6 @@ const indexorMenu = [{
 	type: "item",
 	text: "移除全部索引器",
 	onSelect: removeAllIndexor
-}, {
-	type: "item",
-	text: "索引器方案管理",
-	onSelect: showIndexorManager
 }], variableMenu = [{
 	type: "item",
 	text: "添加变量",

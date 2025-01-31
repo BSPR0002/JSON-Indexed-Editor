@@ -3,7 +3,6 @@ import { endWork } from "./main.mjs";
 import { parse as parseAH, parseAndGetNodes } from "/javascript/module/ArrayHTML.mjs";
 import { save } from "/javascript/module/FileIO.mjs";
 import MiniWindow from "/javascript/module/MiniWindow.mjs";
-import { buildMenu } from "./menu.mjs";
 const stringify = JSON.stringify, ROOT = Symbol("ROOT");
 //预览部分
 class TreeNode {
@@ -207,7 +206,7 @@ var tree, fileHandle, data, changed = false, pending = false;
 const preview = document.getElementById("preview"),
 	root = new TreeRootNode;
 preview.addEventListener("scroll", function () { root.update(tree) }, { passive: true });
-function openFile(JSONData, file) {
+function load(JSONData, file) {
 	tree = buildItem(ROOT, document.createTextNode(""), data = JSONData, root, 0);
 	fileHandle = file;
 	preview.appendChild(tree.node);
@@ -304,65 +303,6 @@ function buildSubArray(value, parent) {
 	for (let i = 0; i < length; ++i) sub.push(buildItem(i, parseAH([["span", i, { class: "preview-key" }]]), value[i], parent, i));
 }
 
-//菜单部分
-buildMenu([
-	{
-		title: "文件",
-		options: [
-			{
-				title: "保存文件（Ctrl + S）",
-				action: saveFile
-			},
-			{
-				title: "另存为",
-				action: saveAs
-			},
-			{
-				title: "关闭文件",
-				action: closeFile
-			}
-		]
-	}/* ,
-	{
-		title: "索引器",
-		options: [
-			{
-				title: "新增索引器",
-				action: addIndexor
-			},
-			{
-				title: "移除全部索引器",
-				action: Indexor.removeAll
-			},
-			{
-				title: "保存当前索引器方案",
-				async action() {
-					if (pending) return;
-					pending = true;
-					const last = await indexorStorage.get("current");
-					if (!last || await MiniWindow.confirm(buildIndexorData("之前已保存了如下方案，要覆盖吗？", last))) indexorStorage.update(Indexor.export(), "current");
-					pending = false;
-				}
-			},
-			{
-				title: "加载已保存的索引器方案",
-				action: Indexor.loadSet
-			},
-			{
-				title: "删除已保存的索引器方案",
-				async action() {
-					if (pending) return;
-					pending = true;
-					const last = await indexorStorage.get("current");
-					if (last) {
-						if (await MiniWindow.confirm(buildIndexorData("确定要删除如下已保存方案吗？", last))) indexorStorage.delete("current");
-					} else new MiniWindow("没有已保存的索引器方案。");
-					pending = false;
-				}
-			}
-		]
-	} */
-]);
 //其他
 document.body.addEventListener("keydown", function (event) {
 	if (fileHandle && event.ctrlKey && event.key == "s") {
@@ -375,4 +315,4 @@ window.addEventListener("beforeunload", function (event) {
 	event.preventDefault();
 	event.returnValue = "文件尚未保存，确认要离开窗口吗？";
 })
-export { openFile, tree, TreeCollectionNode }
+export { load, saveFile, saveAs, closeFile, tree, TreeCollectionNode }
