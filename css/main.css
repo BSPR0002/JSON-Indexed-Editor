@@ -166,6 +166,7 @@ body {
 	white-space: nowrap;
 	background-color: #555;
 	overflow: hidden;
+	gap: 0.25rem;
 }
 .menu-item {
 	height: 100%;
@@ -173,8 +174,15 @@ body {
 	place-content: center start;
 	padding: 0 0.5rem;
 	background-color: transparent;
+	border: solid 1px transparent
 }
 .menu-item:hover {background-color: #444}
+.menu-item:focus {border-color: var(--focusColor)}
+.menu-item.active {
+	background-color: var(--focusColor);
+	border-color: var(--focusColor);
+	pointer-events: none;
+}
 
 #preview {
 	height: 100%;
