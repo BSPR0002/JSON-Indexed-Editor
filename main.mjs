@@ -1,9 +1,10 @@
-import { open, read, readableTypes } from "/javascript/module/FileIO.mjs";
+import { read, readableTypes } from "/javascript/module/FileIO.mjs";
 import { MiniWindow } from "/javascript/module/MiniWindow.mjs";
+import { getTab } from "./ui.mjs";
 import { openFile } from "./tree.mjs";
-const body = document.body;
+import { show as showWelcome } from "./components/welcome.mjs";
+import { show as showEdit } from "./components/indexed_edit.mjs";
 var working = false, pending = false;
-document.getElementById("select-file").addEventListener("click", async function () { try { loadFile(await open({ types: [{ accept: { "application/json": [".json"] } }] })) } catch (e) { } });
 async function loadFile(fileHandle) {
 	if (pending || working) return;
 	pending = true;
@@ -14,7 +15,7 @@ async function loadFile(fileHandle) {
 		fileHandle.requestPermission({ mode: "readwrite" });
 	} catch (error) {
 		pending = false;
-		new MiniWindow("无法解读该文件，请选择正确的 JSON 文件。", "错误！");
+		MiniWindow.alert("无法解读该文件，请选择正确的 JSON 文件。", "错误！");
 		closeWaitWin();
 		return;
 	}
@@ -24,28 +25,32 @@ async function loadFile(fileHandle) {
 	closeWaitWin();
 }
 function preventDefault(event) { event.preventDefault() }
+function startWork(data, fileHandle) {
+	if (working) {
+		MiniWindow.alert("此实例已经打开了文件，请启动一个新实例。");
+		return;
+	}
+	working = true;
+	openFile(data, fileHandle);
+	getTab("welcome").close();
+	showEdit();
+}
+function endWork() {
+	working = false;
+	document.title = "JSON 索引化编辑器"
+	getTab("indexed-edit").close();
+	showWelcome();
+}
 document.addEventListener("dragover", event => {
 	event.preventDefault();
 	event.dataTransfer.dropEffect = "none";
 });
 document.addEventListener("drop", preventDefault);
-body.className = "open";
+showWelcome();
+// @ts-ignore
 launchQueue.setConsumer(function (launchParams) {
 	const file = launchParams.files[0];
 	if (file) loadFile(file);
 });
-function startWork(data, fileHandle) {
-	if (working) {
-		new MiniWindow("此实例已经打开了文件，请启动一个新实例。");
-		return;
-	}
-	working = true;
-	openFile(data, fileHandle);
-	body.className = "work";
-}
-function endWork() {
-	working = false;
-	body.className = "open";
-	document.title = "JSON 索引化编辑器"
-}
-export { endWork }
+document.getElementById("loading-mask").remove();
+export { endWork, loadFile }

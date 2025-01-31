@@ -1,5 +1,5 @@
 import { Indexor } from "../indexor.mjs";
-import { parseAndGetNodes, EVENT_LISTENERS } from "/javascript/module/ArrayHTML.mjs";
+import { parseAndGetNodes, EVENT_LISTENERS, parse as parseAH } from "/javascript/module/ArrayHTML.mjs";
 import { createTab } from "../ui.mjs";
 import MiniWindow from "/javascript/module/MiniWindow.mjs";
 import { currentSetChangeNotifier, getCurrentSet, modifyCurrentSet, show as showIndexorManager } from "./indexor_management.mjs";
@@ -371,7 +371,7 @@ const indexorMenu = [{
 	onSelect: removeAllVariable
 }];
 
-const tab = createTab("indexed-edit", "索引式编辑", [
+const content = Array.from(parseAH([
 	["div", [
 		"索引变量",
 		["button", null, {
@@ -388,8 +388,12 @@ const tab = createTab("indexed-edit", "索引式编辑", [
 		}]
 	], { id: "indexed-edit-indexor" }],
 	indexorFrame
-], false);
-tab.addEventListener("show", enableVariableKey);
-tab.addEventListener("hide", disableVariableKey);
+]).childNodes);
 
-export { updateAllIndexor };
+function show() {
+	const tab = createTab("indexed-edit", "索引式编辑", content, false);
+	tab.addEventListener("show", enableVariableKey);
+	tab.addEventListener("hide", disableVariableKey);
+}
+
+export { updateAllIndexor, show };

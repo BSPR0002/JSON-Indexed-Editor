@@ -221,6 +221,7 @@ function createTab(id, title, content, userClosable = true) {
 	if (!length) changeTab(tab);
 	return tab;
 }
+/** @type {TabItem[]} */
 const tabItems = [];
 var currentTab = null;
 export { createTab, changeTab, getTab };

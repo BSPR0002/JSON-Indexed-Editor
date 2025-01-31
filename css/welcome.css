@@ -1,0 +1,26 @@
+#editor-page-welcome {
+	display: grid;
+	grid-template-columns: minmax(0, 32rem);
+	grid-template-rows: auto auto;
+	place-content: center;
+	padding: 4rem 2rem;
+}
+
+#welcome-icon {
+	place-self: stretch;
+	max-height: 100%;
+	aspect-ratio: 1;
+	overflow: hidden;
+	background-image: url(../icon_monochrome.svg);
+	background-position: center;
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+#welcome-open {
+	place-self: center;
+	font-size: 1rem;
+	font-weight: bold;
+	padding: 1rem;
+	border-radius: 1rem;
+}

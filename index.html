@@ -8,6 +8,7 @@
 	<link rel="icon" type="image/png" href="icon.svg">
 	<link rel="stylesheet" type="text/css" href="/css/BSIF_style.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<link rel="stylesheet" type="text/css" href="css/welcome.css">
 	<link rel="stylesheet" type="text/css" href="css/indexed_edit.css">
 	<link rel="stylesheet" type="text/css" href="css/indexor_management.css">
 	<script src="main.mjs" type="module"></script>
@@ -16,30 +17,25 @@
 	<script>if (location.host != "127.0.0.1") navigator.serviceWorker.register("./service_worker.mjs", { type: "module", updateViaCache: "none" })</script>
 </head>
 
-<body class="bs-loading">
-	<div id="open">
-		<div id="icon"></div>
-		<button id="select-file" class="default-color">打开 JSON 文件</button>
-	</div>
-	<div id="work">
-		<div id="menu"></div>
-		<div id="ui-frame">
-			<div id="preview-frame" class="on">
-				<span>预览</span><button id="preview-switch" title="收起预览窗格"></button>
-				<div id="preview"></div>
-				<div id="preview-resize"></div>
-			</div>
-			<div id="editor-frame" class="ui-frame">
-				<div id="editor-tabs-frame">
-					<div id="editor-tabs"></div>
-					<div id="editor-tabs-scroll-bar">
-						<div id="editor-tabs-scroll-bar-slide"></div>
-					</div>
+<body>
+	<div id="menu"></div>
+	<div id="ui-frame">
+		<div id="preview-frame" class="on">
+			<span>预览</span><button id="preview-switch" title="收起预览窗格"></button>
+			<div id="preview"></div>
+			<div id="preview-resize"></div>
+		</div>
+		<div id="editor-frame" class="ui-frame">
+			<div id="editor-tabs-frame">
+				<div id="editor-tabs"></div>
+				<div id="editor-tabs-scroll-bar">
+					<div id="editor-tabs-scroll-bar-slide"></div>
 				</div>
-				<div id="editor-page"></div>
 			</div>
+			<div id="editor-page"></div>
 		</div>
 	</div>
+	<div id="loading-mask" class="bs-loading"></div>
 </body>
 
 </html>
