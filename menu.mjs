@@ -1,9 +1,12 @@
 import { EVENT_LISTENERS, parse } from "/javascript/module/ArrayHTML.mjs";
-import showMenu, { closeMenu } from "/javascript/module/ContextMenu.mjs";
+import { showMenu, closeMenu } from "/javascript/module/ContextMenu.mjs";
+/** @type {{text: string, list: Parameters<showMenu>[0], sort: number}[]} */
 const menus = [], menuElement = document.getElementById("menu");
 var focusItem = null, expanded = false, keepFocus = false, keyboardMode = true;
+function sort(item1, item2) { return item1.sort - item2.sort }
 function renderMenu() {
 	menuElement.innerHTML = "";
+	menus.sort(sort);
 	// @ts-ignore
 	menuElement.appendChild(parse(menus.map(menuItemMapper)))
 }

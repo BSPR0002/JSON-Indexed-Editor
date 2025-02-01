@@ -1,11 +1,12 @@
 import { read, readableTypes, open } from "/javascript/module/FileIO.mjs";
 import { MiniWindow } from "/javascript/module/MiniWindow.mjs";
 import { getTab } from "./ui.mjs";
+import { renderMenu, menus } from "./menu.mjs";
 import { closeFile, load, saveAs, saveFile } from "./tree.mjs";
 import { show as showWelcome } from "./components/welcome.mjs";
 import { show as showEdit } from "./components/indexed_edit.mjs";
 import { show as showIndexorManager } from "./components/indexor_management.mjs";
-import { renderMenu, menus } from "./menu.mjs";
+import "./helper.mjs";
 var working = false, pending = false;
 async function loadFile(fileHandle) {
 	if (pending || working) return;
@@ -54,6 +55,7 @@ document.addEventListener("dragover", event => {
 document.addEventListener("drop", preventDefault);
 menus.push({
 	text: "文件",
+	sort: 0,
 	list: [{
 		type: "item",
 		text: "打开文件",
@@ -81,6 +83,7 @@ menus.push({
 	}]
 }, {
 	text: "查看",
+	sort: 1,
 	list: [{
 		type: "item",
 		text: "索引器方案管理",

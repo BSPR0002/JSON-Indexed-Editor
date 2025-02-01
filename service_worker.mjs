@@ -1,7 +1,7 @@
 import CacheController from "../support.mjs"
-const cacheController = new CacheController(2); // version
-self.addEventListener("install", event => {
-    event.waitUntil(cacheController.install({
+const cacheController = new CacheController(3); // version
+self.addEventListener("install", async event => {
+    const installation = cacheController.install({
         own: [
             // [".git",".gitattributes","info.json","service_worker.mjs"]
             "buttons.svg",
@@ -32,7 +32,10 @@ self.addEventListener("install", event => {
         shared: [
             "/css/BSIF_style.css"
         ]
-    }))
+    });
+    event.waitUntil(installation);
+    await installation;
+    (await clients.matchAll({includeUncontrolled: true,type: "window"}))[0]?.postMessage("updated");
 });
 self.addEventListener("fetch", event => { event.respondWith(cacheController.respond(event.request)) });
-self.addEventListener("activate", event => { event.waitUntil(cacheController.clean()) });
+self.addEventListener("activate", async event => { event.waitUntil(cacheController.clean()) });
