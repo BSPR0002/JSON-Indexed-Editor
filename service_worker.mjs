@@ -7,9 +7,13 @@ self.addEventListener("install", async event => {
             "buttons.svg",
             "components/indexed_edit.mjs",
             "components/indexor_management.mjs",
+            "components/welcome.mjs",
             "css/indexed_edit.css",
+            "css/indexor_management.css",
             "css/main.css",
+            "css/welcome.css",
             "data.mjs",
+            "helper.mjs",
             "icon_monochrome.svg",
             "icon.png",
             "icon.svg",
@@ -23,11 +27,13 @@ self.addEventListener("install", async event => {
         ],
         requiredScripts: [
             "ArrayHTML.mjs",
-            "MiniWindow.mjs",
-            "IndexedDatabase.mjs",
-            "PromiseWithResolvers.mjs",
+            "BinaryOperate.mjs",
+            "ContextMenu.mjs",
             "FileIO.mjs",
-            "BinaryOperate.mjs"
+            "IndexedDatabase.mjs",
+            "MiniWindow.mjs",
+            "Notifier.mjs",
+            "PromiseWithResolvers.mjs"
         ],
         shared: [
             "/css/BSIF_style.css"
