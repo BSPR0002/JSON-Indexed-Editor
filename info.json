@@ -1,6 +1,6 @@
 {
-	"version": "2.0.1",
+	"version": "2.0.2",
 	"developer":"BlueSky Information Factory",
 	"release":1738379704544,
-	"description":["要编辑的 JSON 文件是巨无霸？文件结构复杂又有一定规律？那正好，这款工具能帮你轻松编辑这样的 JSON 文件！"]
+	"description":["在索引工具的帮助下定位 JSON 中的值并对其进行编辑。"]
 }

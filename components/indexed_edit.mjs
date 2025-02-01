@@ -286,6 +286,8 @@ function variableKeyEvent(event) {
 		case "ArrowDown":
 			variableBumpShortCut(false);
 			break;
+		default:
+			return;
 	}
 	event.preventDefault();
 }

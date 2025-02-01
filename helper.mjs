@@ -82,7 +82,7 @@ function about() {
 			"#help-about-title{font-size:2rem}"
 		]],
 		["span", "JSON 索引化编辑工具", {id:"help-about-title"}],
-		["span", "版本：2.0.1 (4)"],
+		["span", "版本：2.0.2 (5)"],
 		["span", "© BlueSky Information Factory"],
 	]), "关于本应用", { containerClassName: "help-about" });
 }
