@@ -82,8 +82,8 @@
 	display: block;
 	position: relative;
 }
-.indexor-remove:hover {background-color: var(--hoverColor)}
-.indexor-remove:active {background-color: var(--activeColor)}
+.indexor-remove:hover {background-color: var(--hover-color)}
+.indexor-remove:active {background-color: var(--active-color)}
 .indexor-remove:before,.indexor-remove:after {
 	content: "";
 	position: absolute;
@@ -186,7 +186,7 @@
 }
 
 .variable.active {
-	background-color: var(--focusColor);
+	background-color: var(--focus-color);
 }
 .variable.active>.variable-name {
 	color: #000;

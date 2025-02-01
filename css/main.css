@@ -8,11 +8,11 @@ input {outline: none}
 
 button {border: 0}
 button.default-color {
-	background-color: var(--interfaceColor);
+	background-color: var(--interface-color);
 	color: #000;
 }
-button.default-color:hover {background-color: var(--hoverColor)}
-button.default-color:active {background-color: var(--activeColor)}
+button.default-color:hover {background-color: var(--hover-color)}
+button.default-color:active {background-color: var(--active-color)}
 
 body {
 	margin: 0;
@@ -177,10 +177,10 @@ body {
 	border: solid 1px transparent
 }
 .menu-item:hover {background-color: #444}
-.menu-item:focus {border-color: var(--focusColor)}
+.menu-item:focus {border-color: var(--focus-color)}
 .menu-item.active {
-	background-color: var(--focusColor);
-	border-color: var(--focusColor);
+	background-color: var(--focus-color);
+	border-color: var(--focus-color);
 	pointer-events: none;
 }
 
