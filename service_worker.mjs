@@ -1,5 +1,5 @@
 import CacheController from "../support.mjs"
-const cacheController = new CacheController(3); // version
+const cacheController = new CacheController(4); // version
 self.addEventListener("install", async event => {
     const installation = cacheController.install({
         own: [
